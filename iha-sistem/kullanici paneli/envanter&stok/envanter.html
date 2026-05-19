@@ -18,16 +18,16 @@
             
             <nav class="nav-links">
                 <ul>
-                    <li><a href="index.html">Ana Panel</a></li>
-                    <li class="active"><a href="#">Envanter & Stok</a></li>
-                    <li><a href="gorev_planlama.html">Görev Planlama</a></li>
-                    <li><a href="bakim_loglari.html">Bakım & Uçuş Logları</a></li>
-                    <li><a href="personel_yonetimi.html">Personel Yönetimi</a></li>
+                    <li><a href="../anasayfa/dashboard.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Ana Panel</a></li>
+                    <li class="active"><a href="../envanter&stok/envanter.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Envanter & Stok</a></li>
+                    <li><a href="../gorev/gorev_planlama.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Görev Planlama</a></li>
+                    <li><a href="../bakım/bakim_loglari.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Bakım & Uçuş Logları</a></li>
+                    <li><a href="../personel/personel_yonetimi.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Personel Yönetimi</a></li>
                 </ul>
             </nav>
 
             <div class="sidebar-bottom">
-                <div class="exit-btn">Sistemden Çıkış Yap</div>
+                <a href="../../logout.php" style="text-decoration: none; color: inherit; display: block;"><div class="exit-btn">Sistemden Çıkış Yap</div></a>
             </div>
         </aside>
 
@@ -113,12 +113,7 @@
                             </tr>
                         </thead>
                         <tbody id="ihaTablosu">
-                            <tr>
-                                <td>101</td>
-                                <td>Gökdoğan-1</td>
-                                <td>Sabit Kanat</td>
-                                <td><span class="badge badge-green" style="background:#2ecc71; color:#000;">Müsait</span></td>
-                            </tr>
+                            <!-- Veriler veritabanından dinamik olarak yüklenecek -->
                         </tbody>
                     </table>
                 </div>
@@ -207,17 +202,71 @@
             this.reset();
         });
 
-        // Test için başlangıçta iki adet parça ekliyoruz ki görsellik anlaşılsın:
+        // Veritabanından gerçek verileri çek ve tabloları doldur
         window.onload = function() {
-            // Örnek 1: Kritik Seviyenin Üstünde (Yeterli)
-            let tr1 = document.createElement('tr');
-            tr1.innerHTML = `<td>201</td> <td>Lidar Sensörü</td> <td>Sensör</td> <td><b>15</b> / 5</td> <td><span class="badge" style="background:#2ecc71; color:#000;">Yeterli</span></td>`;
-            document.getElementById('stokTablosu').appendChild(tr1);
+            fetch('../../api/envanter_getir.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Veri çekme hatası:', data.error);
+                        if (data.error === 'Unauthorized') {
+                            window.location.replace('../../login.php');
+                        }
+                        return;
+                    }
 
-            // Örnek 2: Kritik Seviyenin Altında (KRİTİK STOK!)
-            let tr2 = document.createElement('tr');
-            tr2.innerHTML = `<td>202</td> <td>22.1V Batarya</td> <td>Batarya</td> <td><b style="color:#e74c3c;">2</b> / 5</td> <td><span class="badge" style="background:#e74c3c; color:#fff; box-shadow: 0 0 8px #e74c3c;">Kritik Stok</span></td>`;
-            document.getElementById('stokTablosu').appendChild(tr2);
+                    // İHA Tablosunu Doldur
+                    const ihaTablosu = document.getElementById('ihaTablosu');
+                    ihaTablosu.innerHTML = ''; // Önce tabloyu temizle
+                    if (data.ihalar && data.ihalar.length > 0) {
+                        data.ihalar.forEach(iha => {
+                            let bg = iha.Durum === 'Müsait' ? '#2ecc71' : (iha.Durum === 'Arızalı' ? '#e74c3c' : '#f39c12');
+                            let color = iha.Durum === 'Müsait' || iha.Durum === 'Bakımda' ? '#000' : '#fff';
+                            
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${iha.IhaID}</td>
+                                <td>${iha.Ad}</td>
+                                <td>${iha.Model}</td>
+                                <td><span class="badge" style="background:${bg}; color:${color};">${iha.Durum}</span></td>
+                            `;
+                            ihaTablosu.appendChild(tr);
+                        });
+                    } else {
+                        ihaTablosu.innerHTML = '<tr><td colspan="4">Kayıtlı İHA bulunamadı.</td></tr>';
+                    }
+
+                    // Stok Tablosunu Doldur
+                    const stokTablosu = document.getElementById('stokTablosu');
+                    stokTablosu.innerHTML = ''; // Önce tabloyu temizle
+                    if (data.envanter && data.envanter.length > 0) {
+                        data.envanter.forEach(parca => {
+                            let stok = parseInt(parca.Stok_Adedi);
+                            let kritik = parseInt(parca.Kritik_Seviye);
+                            let durumHtml = "";
+                            let stokGosterim = stok <= kritik ? `<b style="color:#e74c3c;">${stok}</b> / ${kritik}` : `<b>${stok}</b> / ${kritik}`;
+
+                            if (stok <= kritik) {
+                                durumHtml = `<span class="badge" style="background:#e74c3c; color:#fff; box-shadow: 0 0 8px #e74c3c;">Kritik Stok</span>`;
+                            } else {
+                                durumHtml = `<span class="badge" style="background:#2ecc71; color:#000;">Yeterli</span>`;
+                            }
+
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${parca.ParcaID}</td>
+                                <td>${parca.Parca_Adi}</td>
+                                <td>${parca.Tip}</td>
+                                <td>${stokGosterim}</td>
+                                <td>${durumHtml}</td>
+                            `;
+                            stokTablosu.appendChild(tr);
+                        });
+                    } else {
+                        stokTablosu.innerHTML = '<tr><td colspan="5">Kayıtlı parça bulunamadı.</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Hata:', error));
         };
     </script>
 </body>

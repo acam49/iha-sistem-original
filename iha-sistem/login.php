@@ -4,7 +4,7 @@ require_once __DIR__ . '/config.php';
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php');
+    header('Location: kullanici paneli/anasayfa/dashboard.html');
     exit;
 }
 
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $auth->login($_POST['eposta'] ?? '', $_POST['password'] ?? '');
 
     if ($result['success']) {
-        header('Location: dashboard.php');
+        header('Location: kullanici paneli/anasayfa/dashboard.html');
         exit;
     } else {
         $error = $result['message'];
@@ -35,10 +35,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İHA Sistem - Giriş</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/home_style.css">
     <link rel="stylesheet" href="assets/css/auth.css">
 </head>
 <body class="auth-page">
-    <div class="auth-container">
+    <nav>
+        <div class="logo-kapsayici" onclick="window.location.href='index.html'">
+            <img src="assets/images/logo.png" alt="Tulpar Logo" class="logo-img">
+        </div>
+        
+        <div class="nav-links">
+            <a href="index.html" id="link-ana"><span class="tr">Ana Sayfa</span></a>
+            <a href="index.html#sayfa-hakkimizda" id="link-hakkimizda"><span class="tr">Hakkımızda</span></a>
+            <a href="login.php" class="login-btn"><span class="tr">SİSTEME GİRİŞ</span></a>
+            <a href="register.php" class="register-nav"><span class="tr">KAYIT</span></a>
+        </div>
+    </nav>
+
+    <div class="auth-container" style="margin-top: 80px;">
         <div class="auth-logo">
             <h1>İHA SİSTEM</h1>
             <p>Güvenli giriş · SHA-256</p>
@@ -65,11 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="btn-primary">Sisteme giriş</button>
         </form>
 
-        <div class="auth-footer">
-            <a href="register.php">Hesap oluştur</a>
-            <span class="sep">·</span>
-            <a href="index.html">Ana sayfa</a>
-        </div>
     </div>
     <script src="js/validation.js"></script>
 </body>

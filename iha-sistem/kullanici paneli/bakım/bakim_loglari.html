@@ -18,16 +18,16 @@
             
             <nav class="nav-links">
                 <ul>
-                    <li><a href="index.html">Ana Panel</a></li>
-                    <li><a href="envanter.php">Envanter & Stok</a></li>
-                    <li><a href="gorev_planlama.html">Görev Planlama</a></li>
-                    <li class="active"><a href="#">Bakım & Uçuş Logları</a></li>
-                    <li><a href="personel_yonetimi.html">Personel Yönetimi</a></li>
+                    <li><a href="../anasayfa/dashboard.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Ana Panel</a></li>
+                    <li><a href="../envanter&stok/envanter.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Envanter & Stok</a></li>
+                    <li><a href="../gorev/gorev_planlama.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Görev Planlama</a></li>
+                    <li class="active"><a href="../bakım/bakim_loglari.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Bakım & Uçuş Logları</a></li>
+                    <li><a href="../personel/personel_yonetimi.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Personel Yönetimi</a></li>
                 </ul>
             </nav>
 
             <div class="sidebar-bottom">
-                <div class="exit-btn">Sistemden Çıkış Yap</div>
+                <a href="../../logout.php" style="text-decoration: none; color: inherit; display: block;"><div class="exit-btn">Sistemden Çıkış Yap</div></a>
             </div>
         </aside>
 
@@ -77,13 +77,7 @@
                             </tr>
                         </thead>
                         <tbody id="bakimTablosu">
-                            <tr>
-                                <td>ÖNCÜ-1</td>
-                                <td>Kamera Lens Değişimi</td>
-                                <td>2310213071</td>
-                                <td>4.500 TL</td>
-                                <td><span class="badge b-tamirde">Tamir Ediliyor</span></td>
-                            </tr>
+                            <!-- Veriler veritabanından dinamik olarak yüklenecek -->
                         </tbody>
                     </table>
                 </div>
@@ -133,6 +127,42 @@
     </div>
 
     <script>
+        // Sayfa yüklenince bakım kayıtlarını DB'den çek
+        window.addEventListener('DOMContentLoaded', function() {
+            fetch('../../api/bakim_getir.php')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        if (data.error === 'Unauthorized') window.location.replace('../../index.html');
+                        return;
+                    }
+                    const tbody = document.getElementById('bakimTablosu');
+                    tbody.innerHTML = '';
+                    if (!data.kayitlar || data.kayitlar.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">Burası boş...</td></tr>';
+                    } else {
+                        data.kayitlar.forEach(kayit => {
+                            let masrafStr = parseFloat(kayit.Masraf) > 0
+                                ? parseFloat(kayit.Masraf).toLocaleString('tr-TR') + ' TL'
+                                : '-';
+                            let durumHtml = kayit.Cozum_Notu
+                                ? '<span class="badge b-bitti">Tamir Edildi</span>'
+                                : '<span class="badge b-tamirde">Tamir Ediliyor</span>';
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${kayit.IhaAd || '-'}</td>
+                                <td>${kayit.Ariza_Notu}</td>
+                                <td>${kayit.Sorumlu || '-'}</td>
+                                <td>${masrafStr}</td>
+                                <td>${durumHtml}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(err => console.error('Bakım verileri yüklenemedi:', err));
+        });
+
         // --- ÖZEL ŞEFFAF AÇILIR MENÜNÜN ÇALIŞMA MANTIĞI ---
         const selectBox = document.getElementById('durumSelect');
         const optionsList = document.querySelectorAll('.custom-option');
@@ -195,29 +225,41 @@
         // 🛠️ BACKEND İŞLEM 2: GÖREV VE UÇUŞ LOGU SORGULAMA (SELECT İŞLEMİ)
         // -------------------------------------------------------------------------
         function gorevSorgula() {
-            let girilenId = document.getElementById('sorguGorevId').value.toUpperCase();
+            let girilenId = document.getElementById('sorguGorevId').value.trim();
             
             if(girilenId === "") {
                 alert("Lütfen bir Görev ID girin.");
                 return;
             }
 
-            /*
-              ARKADAŞLARIN İÇİN NOT:
-              Burada girilen Görev ID kullanılarak `UCUS_LOGU` tablosuna AJAX atılacak.
-              Dönen veriler aşağıdaki value alanlarına yazdırılacak. PilotID yerine PersonelID kullanılacak!
-            */
+            fetch(`../../api/ucus_logu_getir.php?gorev_id=${encodeURIComponent(girilenId)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        if (data.error === 'Unauthorized') window.location.replace('../../index.html');
+                        else alert('Hata: ' + data.error);
+                        return;
+                    }
+                    if (!data.found) {
+                        alert('Bu ID ile eşleşen uçuş logu bulunamadı. Lütfen doğru Görev ID\'sini girin.');
+                        return;
+                    }
 
-            // FRONTEND GÖRSEL TESTİ İÇİN GEÇİCİ KOD:
-            document.getElementById('fPersonelId').value = "P-231021"; // PersonelID verisi
-            document.getElementById('fIhaId').value = "TULPAR-X"; // IhaID verisi
-            document.getElementById('fSure').value = "4 Saat 15 Dk"; // Baslangic ve Bitis_Saati farkı
-            document.getElementById('fHava').value = "Açık / Rüzgarlı"; // Hava_Durumu verisi
-            
-            // Masraf kutularının kilidini aç
-            document.getElementById('mKategori').disabled = false;
-            document.getElementById('fMasraf').disabled = false;
-            document.getElementById('btnMasrafKaydet').disabled = false;
+                    // DB'den gelen gerçek verileri alanlara yaz
+                    document.getElementById('fPersonelId').value = data.pilotId + ' (' + data.pilotAdi + ')';
+                    document.getElementById('fIhaId').value = data.ihaAdi;
+                    document.getElementById('fSure').value = data.sure;
+                    document.getElementById('fHava').value = data.havaDurumu;
+                    
+                    // Masraf kutularının kilidini aç
+                    document.getElementById('mKategori').disabled = false;
+                    document.getElementById('fMasraf').disabled = false;
+                    document.getElementById('btnMasrafKaydet').disabled = false;
+                })
+                .catch(err => {
+                    console.error('Sorgulama hatası:', err);
+                    alert('Sunucuya bağlanılamadı.');
+                });
         }
 
         // -------------------------------------------------------------------------

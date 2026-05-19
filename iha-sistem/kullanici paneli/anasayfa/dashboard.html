@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tulpar Savunma Sistemleri</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h1>TULPAR</h1>
+                <p>SAVUNMA SİSTEMLERİ</p>
+                <span class="v-tag">v1.0</span>
+            </div>
+            
+            <nav class="nav-links">
+                <ul>
+                    <li class="active"><a href="dashboard.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Ana Panel</a></li>
+                    <li><a href="../envanter&stok/envanter.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Envanter & Stok</a></li>
+                    <li><a href="../gorev/gorev_planlama.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Görev Planlama</a></li>
+                    <li><a href="../bakım/bakim_loglari.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Bakım & Uçuş Logları</a></li>
+                    <li><a href="../personel/personel_yonetimi.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Personel Yönetimi</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="../../logout.php" style="text-decoration: none; color: inherit; display: block;"><div class="exit-btn">Sistemden Çıkış Yap</div></a>
+                <div class="stealth-footer">Secured by Master Oogway</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header-top">
+                <div class="user-info" id="userInfoBox">Hoş Geldiniz, <span class="green-admin">...</span> YÜKLENİYOR</div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="bubble-card">
+                    <div class="b-title">AKTİF İHA</div>
+                    <div class="b-value" id="valAktifIha">-</div>
+                    <div class="b-sub" id="subAktifIha">Veri çekiliyor...</div>
+                </div>
+                <div class="bubble-card">
+                    <div class="b-title">KRİTİK STOK</div>
+                    <div class="b-value red-text" id="valKritikStok">-</div>
+                    <div class="b-sub" id="subKritikStok">Veri çekiliyor...</div>
+                </div>
+                <div class="bubble-card">
+                    <div class="b-title">BEKLEYEN GÖREV</div>
+                    <div class="b-value" id="valBekleyenGorev">-</div>
+                    <div class="b-sub" id="subBekleyenGorev">Veri çekiliyor...</div>
+                </div>
+                <div class="bubble-card">
+                    <div class="b-title">SON BAKIM MASRAFI</div>
+                    <div class="b-value" id="valSonMasraf">-</div>
+                    <div class="b-sub" id="subSonMasraf">Veri çekiliyor...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch('../../api/dashboard_stats.php')
+                .then(response => response.json())
+                .then(data => {
+                    if(data.error) {
+                        console.error('Veri çekme hatası:', data.error);
+                        if(data.error === 'Unauthorized') {
+                            window.location.replace('../../index.html'); // Yetkisizse anasayfaya gönder
+                        }
+                        return;
+                    }
+                    
+                    // Kullanıcı Bilgisini Güncelle
+                    document.getElementById('userInfoBox').innerHTML = `Hoş Geldiniz, <span class="green-admin">${data.role.toUpperCase()}</span> ${data.username.toUpperCase()}`;
+
+                    // Aktif İHA
+                    document.getElementById('valAktifIha').innerText = data.aktifIha;
+                    document.getElementById('subAktifIha').innerText = data.aktifIha > 0 ? "Uçuşa Hazır" : "Kullanılabilir İHA Yok";
+
+                    // Kritik Stok
+                    const valKritikStok = document.getElementById('valKritikStok');
+                    valKritikStok.innerText = data.kritikStok;
+                    document.getElementById('subKritikStok').innerText = data.kritikDetay;
+                    if(data.kritikStok == 0) {
+                        valKritikStok.classList.remove('red-text');
+                    } else {
+                        valKritikStok.classList.add('red-text');
+                    }
+
+                    // Bekleyen Görev
+                    document.getElementById('valBekleyenGorev').innerText = data.bekleyenGorev;
+                    document.getElementById('subBekleyenGorev').innerText = data.gorevDetay;
+
+                    // Son Bakım Masrafı
+                    document.getElementById('valSonMasraf').innerText = data.sonMasraf;
+                    document.getElementById('subSonMasraf').innerText = data.sonMasrafDetay;
+                })
+                .catch(error => console.error('API İsteği Başarısız:', error));
+        });
+    </script>
+</body>
+</html>

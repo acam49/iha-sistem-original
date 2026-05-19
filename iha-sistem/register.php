@@ -4,7 +4,7 @@ require_once __DIR__ . '/config.php';
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php');
+    header('Location: kullanici paneli/anasayfa/dashboard.html');
     exit;
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($result['success']) {
-        header('Location: dashboard.php');
+        header('Location: kullanici paneli/anasayfa/dashboard.html');
         exit;
     } else {
         $error = $result['message'];
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <div class="auth-footer">
-            <a href="index.php">Zaten hesabım var — giriş</a>
+            <a href="login.php">Zaten hesabım var — giriş</a>
             <span class="sep">·</span>
             <a href="index.html">Ana sayfa</a>
         </div>

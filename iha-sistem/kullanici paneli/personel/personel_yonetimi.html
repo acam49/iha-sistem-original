@@ -18,13 +18,16 @@
             
             <nav class="nav-links">
                 <ul>
-                    <li><a href="index.html">Ana Panel</a></li>
-                    <li class="active"><a href="#">Personel Yönetimi</a></li>
+                    <li><a href="../anasayfa/dashboard.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Ana Panel</a></li>
+                    <li><a href="../envanter&stok/envanter.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Envanter & Stok</a></li>
+                    <li><a href="../gorev/gorev_planlama.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Görev Planlama</a></li>
+                    <li><a href="../bakım/bakim_loglari.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Bakım & Uçuş Logları</a></li>
+                    <li class="active"><a href="../personel/personel_yonetimi.html" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">Personel Yönetimi</a></li>
                 </ul>
             </nav>
 
             <div class="sidebar-bottom">
-                <div class="exit-btn">Sistemden Çıkış Yap</div>
+                <a href="../../logout.php" style="text-decoration: none; color: inherit; display: block;"><div class="exit-btn">Sistemden Çıkış Yap</div></a>
             </div>
         </aside>
 
@@ -92,14 +95,7 @@
                         </tr>
                     </thead>
                     <tbody id="personelTablosu">
-                        <tr data-id="2310213071">
-                            <td class="td-isim">ABDULLAH ETA</td>
-                            <td class="td-id">2310213071</td>
-                            <td class="td-telefon">0555 123 45 67</td>
-                            <td class="td-eposta">abdullah@tulpar.com</td>
-                            <td class="td-yetki"><span class="badge b-admin">Admin</span></td>
-                            <td><button class="btn-red" onclick="personelSil(this)">Sil</button></td>
-                        </tr>
+                        <!-- Veriler veritabanından dinamik olarak yüklenecek -->
                     </tbody>
                 </table>
             </div>
@@ -108,6 +104,40 @@
     </div>
 
     <script>
+        // Sayfa yüklenince personelleri DB'den çek
+        window.addEventListener('DOMContentLoaded', function() {
+            fetch('../../api/personel_getir.php')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        if (data.error === 'Unauthorized') window.location.replace('../../index.html');
+                        return;
+                    }
+                    const tbody = document.getElementById('personelTablosu');
+                    tbody.innerHTML = '';
+                    if (!data.personeller || data.personeller.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">Burası boş...</td></tr>';
+                    } else {
+                        data.personeller.forEach(p => {
+                            let adSoyad = (p.Ad + ' ' + p.Soyad).toUpperCase();
+                            let yetkiCss = yetkiClassBul(p.Rol);
+                            let tr = document.createElement('tr');
+                            tr.setAttribute('data-id', p.PERSONEL_ID);
+                            tr.innerHTML = `
+                                <td class="td-isim">${adSoyad}</td>
+                                <td class="td-id">${p.PERSONEL_ID}</td>
+                                <td class="td-telefon">${p.Telefon || '-'}</td>
+                                <td class="td-eposta">${p.Eposta}</td>
+                                <td class="td-yetki"><span class="badge ${yetkiCss}">${p.Rol}</span></td>
+                                <td><button class="btn-red" onclick="personelSil(this)">Sil</button></td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(err => console.error('Personel verileri yüklenemedi:', err));
+        });
+
         // Yetki ismine göre doğru CSS sınıfını döndüren fonksiyon
         function yetkiClassBul(yetki) {
             switch(yetki) {
