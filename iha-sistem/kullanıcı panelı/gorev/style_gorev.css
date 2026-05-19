@@ -1,0 +1,87 @@
+/* --- TEMEL AYARLAR VE ARKA PLAN --- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+
+body {
+    background-image: url('arkaplan.jpg'); 
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed;
+    background-color: #111;
+    color: white; 
+    height: 100vh; 
+    overflow: hidden;
+}
+
+.app-container { display: flex; height: 100vh; width: 100vw; }
+
+/* --- SOL MENÜ --- */
+.sidebar {
+    width: 200px; 
+    background: rgba(0, 0, 0, 0.15); 
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+    display: flex; flex-direction: column; 
+    border-right: 1px solid rgba(255, 255, 255, 0.05); 
+    padding: 30px 0 15px 0;
+}
+
+.logo-area { text-align: center; margin-bottom: 40px; }
+.logo-area h1 { font-size: 18px; letter-spacing: 2px; font-weight: 300; color: rgba(255,255,255,0.9); }
+.logo-area p { font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.5); }
+.v-tag { font-size: 8px; color: rgba(255,255,255,0.3); display: block; margin-top: 5px; }
+
+.nav-links ul { list-style: none; }
+.nav-links li { padding: 14px 20px; font-size: 12px; color: rgba(255,255,255,0.5); transition: 0.3s; cursor: pointer;}
+.nav-links a { text-decoration: none; color: inherit; display: block; }
+.nav-links li:hover, .nav-links li.active { color: #00f2ff; text-shadow: 0 0 10px #00f2ff; background: rgba(0,242,255,0.05); }
+
+.sidebar-bottom { margin-top: auto; padding: 0 20px; }
+.exit-btn { color: #ff4d4d; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
+.exit-btn:hover { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
+
+/* --- ANA İÇERİK --- */
+.main-content { flex-grow: 1; padding: 30px 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;}
+
+/* Form ve Notlar için 2'li Grid */
+.top-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+
+/* --- CAM EFEKTİ (GLASSMORPHISM) --- */
+.glass-panel {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+    border-radius: 10px; padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.panel-title { font-size: 11px; color: #fff; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px; }
+
+/* --- FORMLAR --- */
+.task-form { display: flex; flex-direction: column; gap: 12px; }
+.task-form input, .task-form select {
+    width: 100%; padding: 10px 12px; 
+    background: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; 
+    font-size: 12px; color: #fff; outline: none;
+}
+.task-form input::placeholder { color: rgba(255,255,255,0.5); }
+.task-form select option { background: #222; color: #fff; }
+
+/* Operasyon Notları Liste Stili */
+.notes-list { list-style: none; font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+.notes-list li::before { content: "- "; color: #ff4d4d; font-weight: bold;}
+
+/* --- BUTONLAR --- */
+.btn { padding: 12px; border: none; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; text-transform: uppercase;}
+.btn-dark { background: #1a1a1a; border: 1px solid #333;} .btn-dark:hover { background: #000; border-color: #555;}
+.btn-finish { background: #2ecc71; color: #000; padding: 5px 10px; font-size: 10px;} .btn-finish:hover { background: #27ae60; }
+.btn-archive { background: #555; color: #fff; padding: 5px 10px; font-size: 10px;} .btn-archive:hover { background: #333; }
+
+/* --- TABLOLAR --- */
+.data-table { width: 100%; border-collapse: collapse; font-size: 11px; color: #fff; text-align: center; }
+.data-table th { padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.5); font-weight: normal; }
+.data-table td { padding: 12px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+/* Durum Bildirimleri */
+.status { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+.status-active { background: rgba(0, 195, 204, 0.2); color: #00c3cc; border: 1px solid #00c3cc;}
+.status-done { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71;}

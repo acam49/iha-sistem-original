@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    /* Arka plan resmin her zaman tam ekran ve sabit kalır */
+    background-image: url('arkaplan.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #0a0a0a; /* Resim yüklenmezse diye yedek siyah */
+    height: 100vh;
+    width: 100vw;
+    color: white;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- SOL MENÜ: DAR VE ŞEFFAF --- */
+.sidebar {
+    width: 200px; /* 240px'den 200px'e çekildi - Daha dar */
+    background: rgba(0, 0, 0, 0.1); /* Çok düşük belirginlik */
+    backdrop-filter: blur(3px); /* Hafif blur */
+    -webkit-backdrop-filter: blur(3px);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 30px 0 15px 0;
+    transition: width 0.3s ease;
+}
+
+.logo-area {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo-area h1 {
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.logo-area p {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.v-tag {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-links ul {
+    list-style: none;
+}
+
+.nav-links li {
+    padding: 14px 20px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Turkuaz Işıldama Efekti */
+.nav-links li:hover, .nav-links li.active {
+    color: #00f2ff;
+    text-shadow: 0 0 10px #00f2ff;
+    background: rgba(0, 242, 255, 0.05);
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 0 20px;
+}
+
+.exit-btn {
+    color: #ff4d4d;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: 0.3s;
+}
+
+.exit-btn:hover {
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+}
+
+/* ZOR GÖRÜNEN ALT YAZI */
+.stealth-footer {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.08); /* %8 görünürlük - Neredeyse hayalet yazı */
+    font-style: italic;
+}
+
+/* --- ANA İÇERİK --- */
+.main-content {
+    flex-grow: 1;
+    padding: 30px 40px;
+}
+
+.header-top {
+    margin-bottom: 40px;
+}
+
+.green-admin {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+/* --- BUBBLE CARDS (GÖRÜNMÜYORSA DİYE GÜNCELLENDİ) --- */
+.stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.bubble-card {
+    min-width: 220px;
+    flex: 1;
+    /* Glassmorphism Ayarları */
+    background: rgba(255, 255, 255, 0.08); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 25px;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Havada Süzülme Animasyonu */
+.bubble-card:hover {
+    transform: translateY(-12px);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.b-title {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.b-value {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.red-text {
+    color: #ff4d4d;
+}
+
+.b-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}

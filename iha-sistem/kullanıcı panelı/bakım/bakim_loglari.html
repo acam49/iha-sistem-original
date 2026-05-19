@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tulpar Savunma - Bakım & Uçuş Logları</title>
+    <link rel="stylesheet" href="style_bakim.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h1>TULPAR</h1>
+                <p>SAVUNMA SİSTEMLERİ</p>
+                <span class="v-tag">v1.0</span>
+            </div>
+            
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="index.html">Ana Panel</a></li>
+                    <li><a href="envanter.php">Envanter & Stok</a></li>
+                    <li><a href="gorev_planlama.html">Görev Planlama</a></li>
+                    <li class="active"><a href="#">Bakım & Uçuş Logları</a></li>
+                    <li><a href="personel_yonetimi.html">Personel Yönetimi</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="exit-btn">Sistemden Çıkış Yap</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <div class="security-banner">
+                <strong>GÜVENLİK UYARISI:</strong> Bu sayfa "Finans ve Muhasebe Modülü" kapsamındadır. Sadece Muhasebeci ve Admin yetkisiyle işlemler yapılabilir.
+            </div>
+            
+            <div class="grid-2col">
+                
+                <div class="glass-panel">
+                    <h3 class="panel-title">İHA ARIZA / BAKIM KAYDI VE MASRAFI</h3>
+                    
+                    <form id="bakimForm" style="display: flex; flex-direction: column; gap: 10px;">
+                        
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <input type="text" id="bIhaId" placeholder="İHA ID Giriniz" required> <input type="text" id="bSorumluId" placeholder="Sorumlu Personel ID" required> </div>
+
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <input type="date" id="bTarih" required> <div class="custom-select-wrapper">
+                                <div class="custom-select" id="durumSelect">
+                                    <span id="durumText">Durum Seçin</span>
+                                    <i class="arrow"></i>
+                                </div>
+                                <div class="custom-options">
+                                    <div class="custom-option" data-value="tamirde">Tamir Ediliyor</div>
+                                    <div class="custom-option" data-value="bitti">Tamir Edildi</div>
+                                </div>
+                                <input type="hidden" name="ihaDurum" id="gercekDurum" required>
+                            </div>
+                        </div>
+
+                        <input type="text" id="bAriza" placeholder="Arıza Notu (Sorunun tanımı)" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color:#fff;" required> <input type="text" id="bCozum" placeholder="Çözüm Notu (Nasıl giderildi? - Opsiyonel)" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color:#fff;"> <div class="input-group" style="margin-bottom: 0;">
+                            <input type="number" id="bMasraf" placeholder="Bakım Masrafı (TL)" required> <button type="submit" class="btn btn-dark" style="flex: 0.5;">Kaydet</button>
+                        </div>
+                    </form>
+
+                    <table class="data-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>İHA ID</th>
+                                <th>Arıza Notu</th>
+                                <th>Sorumlu Personel</th>
+                                <th>Masraf</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bakimTablosu">
+                            <tr>
+                                <td>ÖNCÜ-1</td>
+                                <td>Kamera Lens Değişimi</td>
+                                <td>2310213071</td>
+                                <td>4.500 TL</td>
+                                <td><span class="badge b-tamirde">Tamir Ediliyor</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="glass-panel">
+                    <h3 class="panel-title">UÇUŞ LOGLARI VE GÖREV MASRAFLARI</h3>
+                    
+                    <div class="input-group">
+                        <input type="text" id="sorguGorevId" placeholder="Görev ID Giriniz (Örn: GRV-1024)">
+                        <button type="button" class="btn btn-search" onclick="gorevSorgula()">Sorgula</button>
+                    </div>
+
+                    <form id="masrafForm" style="display: flex; flex-direction: column; gap: 10px;">
+                        
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <input type="text" id="fPersonelId" class="input-locked" placeholder="Personel ID (Otomatik)" readonly> <input type="text" id="fIhaId" class="input-locked" placeholder="Kullanılan İHA (Otomatik)" readonly> </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <input type="text" id="fSure" class="input-locked" placeholder="Uçuş Süresi (Otomatik)" readonly> <input type="text" id="fHava" class="input-locked" placeholder="Hava Durumu (Otomatik)" readonly> </div>
+                        
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <select id="mKategori" style="padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color:#fff;" disabled required>
+                                <option value="" disabled selected>Masraf Kategorisi</option>
+                                <option value="Yakıt" style="background: #222;">Yakıt</option>
+                                <option value="Ulaşım" style="background: #222;">Ulaşım</option>
+                                <option value="Donanım Satınalma" style="background: #222;">Donanım Satınalma</option>
+                            </select> <input type="number" id="fMasraf" placeholder="Tutar (TL)" disabled required> </div>
+
+                        <button type="button" class="btn btn-cyan" id="btnMasrafKaydet" disabled onclick="masrafKaydet()" style="width: 100%;">Masrafı Sistemde İşle</button>
+                    </form>
+
+                    <table class="data-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Görev ID</th>
+                                <th>Personel ID</th>
+                                <th>Kategori</th>
+                                <th>Tutar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masrafTablosu">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- ÖZEL ŞEFFAF AÇILIR MENÜNÜN ÇALIŞMA MANTIĞI ---
+        const selectBox = document.getElementById('durumSelect');
+        const optionsList = document.querySelectorAll('.custom-option');
+        const hiddenInput = document.getElementById('gercekDurum');
+        const durumText = document.getElementById('durumText');
+
+        selectBox.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('open');
+        });
+
+        optionsList.forEach(option => {
+            option.addEventListener('click', function() {
+                durumText.innerText = this.innerText;
+                hiddenInput.value = this.getAttribute('data-value');
+                selectBox.classList.remove('open');
+                selectBox.classList.add('has-value');
+            });
+        });
+
+        document.addEventListener('click', function() {
+            selectBox.classList.remove('open');
+        });
+
+
+        // -------------------------------------------------------------------------
+        // 🛠️ BACKEND İŞLEM 1: BAKIM KAYDI EKLEME
+        // -------------------------------------------------------------------------
+        document.getElementById('bakimForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Buradaki veriler PHP'ye POST edilecek
+            let ihaId = document.getElementById('bIhaId').value;
+            let sorumluId = document.getElementById('bSorumluId').value;
+            let ariza = document.getElementById('bAriza').value;
+            let masraf = document.getElementById('bMasraf').value;
+            let durum = hiddenInput.value; 
+
+            // Frontend Görsel Test Eklemesi
+            let durumHtml = durum === "tamirde" ? 
+                '<span class="badge b-tamirde">Tamir Ediliyor</span>' : 
+                '<span class="badge b-bitti">Tamir Edildi</span>';
+
+            let yeniSatir = document.createElement('tr');
+            yeniSatir.innerHTML = `
+                <td>${ihaId}</td>
+                <td>${ariza}</td>
+                <td>${sorumluId}</td>
+                <td>${masraf} TL</td>
+                <td>${durumHtml}</td>
+            `;
+            document.getElementById('bakimTablosu').appendChild(yeniSatir);
+            this.reset();
+            durumText.innerText = "Durum Seçin";
+            selectBox.classList.remove('has-value');
+        });
+
+
+        // -------------------------------------------------------------------------
+        // 🛠️ BACKEND İŞLEM 2: GÖREV VE UÇUŞ LOGU SORGULAMA (SELECT İŞLEMİ)
+        // -------------------------------------------------------------------------
+        function gorevSorgula() {
+            let girilenId = document.getElementById('sorguGorevId').value.toUpperCase();
+            
+            if(girilenId === "") {
+                alert("Lütfen bir Görev ID girin.");
+                return;
+            }
+
+            /*
+              ARKADAŞLARIN İÇİN NOT:
+              Burada girilen Görev ID kullanılarak `UCUS_LOGU` tablosuna AJAX atılacak.
+              Dönen veriler aşağıdaki value alanlarına yazdırılacak. PilotID yerine PersonelID kullanılacak!
+            */
+
+            // FRONTEND GÖRSEL TESTİ İÇİN GEÇİCİ KOD:
+            document.getElementById('fPersonelId').value = "P-231021"; // PersonelID verisi
+            document.getElementById('fIhaId').value = "TULPAR-X"; // IhaID verisi
+            document.getElementById('fSure').value = "4 Saat 15 Dk"; // Baslangic ve Bitis_Saati farkı
+            document.getElementById('fHava').value = "Açık / Rüzgarlı"; // Hava_Durumu verisi
+            
+            // Masraf kutularının kilidini aç
+            document.getElementById('mKategori').disabled = false;
+            document.getElementById('fMasraf').disabled = false;
+            document.getElementById('btnMasrafKaydet').disabled = false;
+        }
+
+        // -------------------------------------------------------------------------
+        // 🛠️ BACKEND İŞLEM 3: MASRAF KAYDETME (MASRAF TABLOSUNA INSERT)
+        // -------------------------------------------------------------------------
+        function masrafKaydet() {
+            let gorevId = document.getElementById('sorguGorevId').value.toUpperCase();
+            let personelId = document.getElementById('fPersonelId').value;
+            let kategori = document.getElementById('mKategori').value;
+            let masraf = document.getElementById('fMasraf').value;
+
+            if(masraf === "" || kategori === "") {
+                alert("Lütfen kategori ve tutar bilgilerini eksiksiz girin.");
+                return;
+            }
+
+            // FRONTEND GÖRSEL TESTİ İÇİN TABLOYA EKLEME:
+            let yeniSatir = document.createElement('tr');
+            yeniSatir.innerHTML = `
+                <td style="color:#f39c12; font-weight:bold;">${gorevId}</td>
+                <td>${personelId}</td>
+                <td>${kategori}</td>
+                <td style="color:#2ecc71; font-weight:bold;">${masraf} TL</td>
+            `;
+            document.getElementById('masrafTablosu').appendChild(yeniSatir);
+
+            // İşlem bitince formu kilitle ve temizle
+            document.getElementById('sorguGorevId').value = ""; 
+            document.getElementById('masrafForm').reset(); 
+            document.getElementById('mKategori').disabled = true;
+            document.getElementById('fMasraf').disabled = true;
+            document.getElementById('btnMasrafKaydet').disabled = true;
+        }
+    </script>
+</body>
+</html>

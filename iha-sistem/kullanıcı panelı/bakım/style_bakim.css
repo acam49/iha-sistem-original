@@ -1,0 +1,134 @@
+/* --- TEMEL AYARLAR VE ARKA PLAN --- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+
+body {
+    background-image: url('arkaplan.jpg'); 
+    background-size: cover; background-position: center; background-attachment: fixed;
+    background-color: #111; color: white; height: 100vh; overflow: hidden;
+}
+
+.app-container { display: flex; height: 100vh; width: 100vw; }
+
+/* --- SOL MENÜ --- */
+.sidebar {
+    width: 200px; background: rgba(0, 0, 0, 0.15); 
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+    display: flex; flex-direction: column; border-right: 1px solid rgba(255, 255, 255, 0.05); padding: 30px 0 15px 0;
+}
+
+.logo-area { text-align: center; margin-bottom: 40px; }
+.logo-area h1 { font-size: 18px; letter-spacing: 2px; font-weight: 300; color: rgba(255,255,255,0.9); }
+.logo-area p { font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.5); }
+.v-tag { font-size: 8px; color: rgba(255,255,255,0.3); display: block; margin-top: 5px; }
+
+.nav-links ul { list-style: none; }
+.nav-links li { padding: 14px 20px; font-size: 11px; color: rgba(255,255,255,0.5); transition: 0.3s; cursor: pointer;}
+.nav-links a { text-decoration: none; color: inherit; display: block; }
+.nav-links li:hover, .nav-links li.active { color: #00f2ff; text-shadow: 0 0 10px #00f2ff; background: rgba(0,242,255,0.05); }
+
+.sidebar-bottom { margin-top: auto; padding: 0 20px; }
+.exit-btn { color: #ff4d4d; font-size: 11px; font-weight: bold; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
+.exit-btn:hover { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
+
+/* --- ANA İÇERİK YERLEŞİMİ --- */
+.main-content { 
+    flex-grow: 1; padding: 30px 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+}
+
+.security-banner {
+    background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c;
+    padding: 10px 15px; border-radius: 6px; font-size: 11px; color: #ffcccc; display: flex; align-items: center; gap: 10px;
+}
+.security-banner strong { color: #fff; }
+
+.grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* --- CAM EFEKTİ --- */
+.glass-panel {
+    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.panel-title { font-size: 11px; color: #fff; font-weight: bold; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase;}
+
+/* --- STANDART İNPUTLAR --- */
+.input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+.input-group input {
+    flex: 1; padding: 12px 15px; background: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; 
+    font-size: 11px; color: #fff; outline: none; transition: 0.3s;
+}
+
+/* 🎯 YENİ EKLENDİ: Kutuların içindeki yazıları beyaz ve belirgin yapar */
+input::placeholder, textarea::placeholder {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.input-group input:focus { border-color: #00c3cc; box-shadow: 0 0 8px rgba(0, 195, 204, 0.3); }
+
+/* Kilitli kutuların yazıları ayrışması için biraz daha silik tutuldu */
+.input-locked { background: rgba(0, 0, 0, 0.3) !important; color: #888 !important; cursor: not-allowed; border-color: rgba(255,255,255,0.05) !important; }
+.input-locked::placeholder { color: rgba(255, 255, 255, 0.4) !important; }
+
+/* ========================================================================= */
+/* ÖZEL ŞEFFAF AÇILIR MENÜ (CUSTOM SELECT GLASSMORPHISM)                     */
+/* ========================================================================= */
+.custom-select-wrapper { position: relative; flex: 1; user-select: none; }
+
+.custom-select {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 15px; background: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; 
+    font-size: 11px; 
+    color: rgba(255, 255, 255, 0.75); /* 🎯 Durum Seçin yazısı belirginleştirildi */
+    font-weight: 500; letter-spacing: 0.5px;
+    cursor: pointer; transition: 0.3s;
+}
+
+.custom-select.has-value { color: #fff; }
+.custom-select:hover, .custom-select.open { border-color: #00c3cc; box-shadow: 0 0 8px rgba(0, 195, 204, 0.3); }
+
+/* Ok işareti animasyonu ve belirginleştirilmesi */
+.arrow {
+    border: solid rgba(255, 255, 255, 0.75); /* 🎯 Ok rengi belirginleştirildi */
+    border-width: 0 2px 2px 0; 
+    display: inline-block; padding: 3px; transform: rotate(45deg); transition: 0.3s;
+}
+.custom-select.open .arrow { transform: rotate(-135deg); border-color: #00c3cc;}
+
+/* Açılan Şeffaf Kutular */
+.custom-options {
+    position: absolute; top: 100%; left: 0; right: 0; margin-top: 5px;
+    background: rgba(15, 15, 15, 0.85); /* Koyu şeffaf arka plan */
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    opacity: 0; visibility: hidden; transform: translateY(-10px); /* Yukarıdan süzülme efekti */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; overflow: hidden;
+}
+
+.custom-select.open + .custom-options { opacity: 1; visibility: visible; transform: translateY(0); }
+
+/* Seçenekler */
+.custom-option {
+    padding: 12px 15px; font-size: 11px; color: #ccc; 
+    cursor: pointer; transition: 0.2s; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.custom-option:last-child { border-bottom: none; }
+.custom-option:hover { background: rgba(0, 195, 204, 0.15); color: #00c3cc; padding-left: 20px; /* Üzerine gelince sağa kayma efekti */ }
+
+/* --- BUTONLAR VE TABLOLAR --- */
+.btn { padding: 12px 20px; border: none; border-radius: 6px; color: white; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
+.btn-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.2); } .btn-dark:hover { background: #000; }
+.btn-cyan { background: #00c3cc; color: #fff; } .btn-cyan:hover { background: #00e5ff; box-shadow: 0 0 10px #00c3cc; }
+.btn-search { background: #f39c12; color: #000; } .btn-search:hover { background: #f1c40f; }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 10px; color: rgba(255, 255, 255, 0.9); text-align: left; }
+.data-table th { padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.5); font-weight: normal; }
+.data-table td { padding: 15px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: middle;}
+
+.badge { padding: 4px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; display: inline-block; text-align: center; min-width: 80px;}
+.b-tamirde { background: #f39c12; color: #000; } 
+.b-bitti { background: #2ecc71; color: #000; }

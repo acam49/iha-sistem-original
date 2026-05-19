@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tulpar Savunma - Görev Planlama</title>
+    <link rel="stylesheet" href="style_gorev.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h1>TULPAR</h1>
+                <p>SAVUNMA SİSTEMLERİ</p>
+                <span class="v-tag">v1.0</span>
+            </div>
+            
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="index.html">Ana Panel</a></li>
+                    <li><a href="envanter.php">Envanter & Stok</a></li>
+                    <li class="active"><a href="#">Görev Planlama</a></li>
+                    <li><a href="bakim_loglari.html">Bakım & Uçuş Logları</a></li>
+                    <li><a href="personel_yonetimi.html">Personel Yönetimi</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="exit-btn">Sistemden Çıkış Yap</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="top-grid">
+                <div class="glass-panel">
+                    <h3 class="panel-title">YENİ GÖREV PLANLA</h3>
+                    <form id="gorevForm" class="task-form">
+                        <input type="text" id="gorevKonusu" placeholder="Görev Başlığı" required>
+                        
+                        <input type="text" id="detay" placeholder="Görev Detayı" required>
+                        <input type="text" id="lokasyon" placeholder="Lokasyon (Örn: Sınır Hattı)" required>
+                        
+                        <select id="ihaSecimi" required>
+                            <option value="" disabled selected>İHA Seçin (Sadece Uçuşa Hazır Olanlar)</option>
+                            <option value="ÖNCÜ-1">ÖNCÜ-1</option>
+                            <option value="KARAKURT-2">KARAKURT-2</option>
+                            <option value="TULPAR-X">TULPAR-X</option>
+                        </select>
+                        <input type="text" id="personel" placeholder="Sorumlu Personel" required>
+                        <input type="date" id="tarih" required>
+                        <button type="submit" class="btn btn-dark">Görevi Onayla ve Atama Yap</button>
+                    </form>
+                </div>
+
+                <div class="glass-panel">
+                    <h3 class="panel-title">OPERASYON NOTLARI</h3>
+                    <ul class="notes-list">
+                        <li>ID ataması sistem tarafından otomatik olarak yapılır.</li>
+                        <li>Sadece durumu "Uçuşa Hazır" olan İHA'lar listeye düşer. Arızalı İHA'lara görev atanamaz.</li>
+                        <li>Personel sicilini kendi adıyla veya yetki koduyla girmelidir.</li>
+                        <li>Arşivlenen görev kayıtları sadece Admin yetkisiyle sistemden tamamen silinebilir.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <h3 class="panel-title">BEKLEYEN VE DEVAM EDEN OPERASYONLAR</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Görev ID</th>
+                            <th>Başlık</th>
+                            <th>Detay</th>
+                            <th>Lokasyon</th>
+                            <th>İHA</th>
+                            <th>Personel</th>
+                            <th>Tarih</th>
+                            <th>Durum</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="aktifGorevler">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="glass-panel">
+                <h3 class="panel-title">ARŞİV: TAMAMLANAN GÖREVLER</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Görev ID</th>
+                            <th>Başlık</th>
+                            <th>Lokasyon</th>
+                            <th>İHA</th>
+                            <th>Personel</th>
+                            <th>Tarih</th>
+                            <th>Operasyon Süresi</th>
+                            <th>Durum</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="arsivGorevler">
+                        </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Form gönderildiğinde çalışacak fonksiyon
+        document.getElementById('gorevForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Sayfanın yenilenmesini engeller
+
+            // Formdaki verileri alıyoruz (Yeni eklenenler dahil)
+            const konu = document.getElementById('gorevKonusu').value;
+            const detay = document.getElementById('detay').value;
+            const lokasyon = document.getElementById('lokasyon').value;
+            const iha = document.getElementById('ihaSecimi').value;
+            const personel = document.getElementById('personel').value;
+            const tarih = document.getElementById('tarih').value;
+
+            // Rastgele Görev ID'si oluşturma (Örn: GRV-4821)
+            const randomID = 'GRV-' + Math.floor(Math.random() * 9000 + 1000);
+
+            // Aktif tablosuna eklenecek yeni satır (HTML)
+            const yeniSatir = document.createElement('tr');
+            yeniSatir.innerHTML = `
+                <td>${randomID}</td>
+                <td>${konu}</td>
+                <td>${detay}</td>
+                <td>${lokasyon}</td>
+                <td>${iha}</td>
+                <td>${personel}</td>
+                <td>${tarih}</td>
+                <td><span class="status status-active">Devam Ediyor</span></td>
+                <td><button type="button" class="btn btn-finish" onclick="goreviBitir(this)">Bitir</button></td>
+            `;
+
+            // Satırı tabloya ekle
+            document.getElementById('aktifGorevler').appendChild(yeniSatir);
+
+            // Formu temizle
+            document.getElementById('gorevForm').reset();
+        });
+
+        // Görevi Bitir Butonuna basıldığında çalışacak fonksiyon
+        function goreviBitir(buton) {
+            // Tıklanan butonun bulunduğu satırı (tr) bul
+            const satir = buton.parentElement.parentElement;
+            
+            // Satırdaki verileri oku (Yeni sütunlara göre indexler güncellendi)
+            const id = satir.cells[0].innerText;
+            const konu = satir.cells[1].innerText;
+            // detayı arşive almıyoruz, çok yer kaplamasın diye
+            const lokasyon = satir.cells[3].innerText;
+            const iha = satir.cells[4].innerText;
+            const personel = satir.cells[5].innerText;
+            const tarih = satir.cells[6].innerText;
+
+            // Operasyon süresini simüle edelim (1 ile 5 saat arası rastgele bir süre)
+            const sureH = Math.floor(Math.random() * 4) + 1;
+            const sureM = Math.floor(Math.random() * 59);
+            const sureMetni = `${sureH} Saat ${sureM} Dk`;
+
+            // Arşiv tablosuna eklenecek yeni satırı oluştur
+            const arsivSatiri = document.createElement('tr');
+            arsivSatiri.innerHTML = `
+                <td>${id}</td>
+                <td>${konu}</td>
+                <td>${lokasyon}</td>
+                <td>${iha}</td>
+                <td>${personel}</td>
+                <td>${tarih}</td>
+                <td style="color:#f1c40f;">${sureMetni}</td>
+                <td><span class="status status-done">Tamamlandı</span></td>
+                <td><button type="button" class="btn btn-archive" onclick="satiriSil(this)">Arşivle</button></td>
+            `;
+
+            // Yeni satırı arşiv tablosuna ekle
+            document.getElementById('arsivGorevler').appendChild(arsivSatiri);
+
+            // Eski sat

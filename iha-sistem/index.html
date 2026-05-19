@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TULPAR Savunma Sistemleri | Kurumsal</title>
+    <!-- Sosyal Medya İkonları İçin FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/home_style.css">
+</head>
+<body>
+
+    <!-- ÜST MENÜ & LOGO -->
+    <nav>
+        <div class="logo-kapsayici" onclick="sayfaDegistir('sayfa-ana')">
+            <img src="assets/images/logo.png" alt="Tulpar Logo" class="logo-img">
+        </div>
+        
+        <div class="nav-links">
+            <a onclick="sayfaDegistir('sayfa-ana')" id="link-ana" class="aktif"><span class="tr">Ana Sayfa</span><span class="en">Home</span></a>
+            <a onclick="sayfaDegistir('sayfa-hakkimizda')" id="link-hakkimizda"><span class="tr">Hakkımızda</span><span class="en">About Us</span></a>
+            <a href="index.php" class="login-btn"><span class="tr">SİSTEME GİRİŞ</span><span class="en">SYSTEM LOGIN</span></a>
+            <a href="register.php" class="register-nav"><span class="tr">KAYIT</span><span class="en">REGISTER</span></a>
+            <div class="lang-switch" onclick="dilDegistir()"><span class="tr">🇬🇧 EN</span><span class="en">🇹🇷 TR</span></div>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- 1. ANA SAYFA BÖLÜMÜ                        -->
+    <!-- ========================================== -->
+    <div id="sayfa-ana" class="sayfa aktif-sayfa">
+        
+        <section class="hero">
+            <video class="hero-video" autoplay loop muted playsinline>
+                <source src="assets/media/drone_bg.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+            <h1 class="anim-eleman"><span class="tr">Geleceğin <span>Gökyüzü</span> Teknolojileri</span><span class="en">Future <span>Sky</span> Technologies</span></h1>
+        </section>
+
+        <!-- 5'Lİ GALERİ -->
+        <section class="galeri-alani">
+            <h2 class="anim-eleman"><span class="tr">Anlaşma Yaptığımız Şirketler</span><span class="en">Our Partner Companies</span></h2>
+            
+            <div class="gelismis-slider anim-eleman">
+                <button class="ok ok-sol" onclick="slaytDegistir(-1)">&#10094;</button>
+                
+                <div class="slayt-kapsayici">
+                    <div class="slayt-kart slayt-merkez">
+                        <img src="assets/images/foto1.png" alt="Türksat">
+                        <div class="slayt-bilgi">
+                            <h3>TÜRKSAT</h3>
+                            <p>Ankara, Gölbaşı Kampüsü</p>
+                        </div>
+                    </div>
+                    <div class="slayt-kart slayt-sag">
+                        <img src="assets/images/foto2.png" alt="Aselsan">
+                        <div class="slayt-bilgi">
+                            <h3>ASELSAN</h3>
+                            <p>Ankara, Macunköy Tesisleri</p>
+                        </div>
+                    </div>
+                    <div class="slayt-kart">
+                        <img src="assets/images/foto3.png" alt="Ege İnovasyon">
+                        <div class="slayt-bilgi">
+                            <h3>EGE İNOVASYON TEKNOLOJİLERİ</h3>
+                            <p>İzmir, Teknopark Araştırma Merkezi</p>
+                        </div>
+                    </div>
+                    <div class="slayt-kart">
+                        <img src="assets/images/foto4.png" alt="İstanbul Teknolojileri">
+                        <div class="slayt-bilgi">
+                            <h3>İSTANBUL TEKNOLOJİLERİ</h3>
+                            <p>İstanbul, Bilişim Vadisi</p>
+                        </div>
+                    </div>
+                    <div class="slayt-kart slayt-sol">
+                        <img src="assets/images/foto5.png" alt="Baykar">
+                        <div class="slayt-bilgi">
+                            <h3>BAYKAR</h3>
+                            <p>İstanbul, Milli İHA Ar-Ge ve Üretim Kampüsü</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="ok ok-sag" onclick="slaytDegistir(1)">&#10095;</button>
+            </div>
+        </section>
+
+        <!-- KUTLAMA ALANI -->
+        <section class="kutlama-alani">
+            <div class="kutlama-arkaplan"></div>
+            <div class="kutlama-icerik">
+                
+              <div class="kutlama-sol">
+                    <h2 class="anim-eleman">
+                        <span class="tr">TULPAR'da birlikte<br><span>gökleri fethederiz!</span></span>
+                        <span class="en">Together at TULPAR,<br><span>we conquer the skies!</span></span>
+                    </h2>
+                    <p class="anim-eleman">
+                        <span class="tr">Dinamik ve yenilikçi projelerle dolu bir ortamda, sürekli gelişeceğin bir kariyer seni bekliyor. TULPAR tam sana göre! Aramıza katıl ve birlikte uçalım.</span>
+                        <span class="en">A career where you will continuously grow in an environment full of dynamic and innovative projects awaits you. TULPAR is exactly for you! Join us and let's fly together.</span>
+                    </p>
+                    <div class="kutlama-butonlar anim-eleman">
+                        <a href="#" class="btn-gradient">
+                            <span class="tr">Kariyer Fırsatları</span>
+                            <span class="en">Career Opportunities</span>
+                        </a>
+                        <a href="#" class="btn-outline">
+                            <span class="tr">Genç Yetenek</span>
+                            <span class="en">Young Talent</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="kutlama-sag">
+                    <div class="video-cerceve anim-eleman">
+                        <video src="assets/media/kutlama_video.mp4#t=1" controls></video>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+       <!-- SSS ALANI -->
+        <section class="sss-alani">
+            <h2 class="anim-eleman"><span class="tr">Sıkça Sorulan Sorular</span><span class="en">Frequently Asked Questions</span></h2>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Sistemin veri güvenliği nasıl sağlanıyor?</span>
+                    <span class="en">How is the system's data security ensured?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Sistemimiz, NATO standartlarında uçtan uca şifreleme (E2EE) ve çok katmanlı güvenlik protokolleri ile korunmaktadır.</span>
+                    <span class="en">Our system is protected by NATO-standard end-to-end encryption (E2EE) and multi-layered security protocols.</span>
+                </div>
+            </details>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Filodaki her İHA modeli sisteme entegre edilebilir mi?</span>
+                    <span class="en">Can every UAV model in the fleet be integrated into the system?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Evet, açık mimari yapımız sayesinde hem sabit kanatlı hem de döner kanatlı tüm İHA'lar MAVLink ve özel protokoller üzerinden entegre edilebilir.</span>
+                    <span class="en">Yes, thanks to our open architecture, all fixed-wing and rotary-wing UAVs can be integrated via MAVLink and custom protocols.</span>
+                </div>
+            </details>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Otonom uçuş modları hangi seviyeye kadar destekleniyor?</span>
+                    <span class="en">To what level are autonomous flight modes supported?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Seviye 4 (Yüksek Otomasyon) ve belirli senaryolarda Seviye 5 (Tam Otonom) uçuş ve görev icrası desteği sunuyoruz.</span>
+                    <span class="en">We offer Level 4 (High Automation) and, in specific scenarios, Level 5 (Full Autonomy) flight and mission execution support.</span>
+                </div>
+            </details>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Yapay zeka destekli hedef tanıma hassasiyeti nedir?</span>
+                    <span class="en">What is the accuracy of AI-supported target recognition?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Eğitilmiş YOLO modellerimiz, optimize edilmiş veri setleri ile zorlu hava koşullarında dahi %92 ve üzeri doğruluk oranına sahiptir.</span>
+                    <span class="en">Our trained YOLO models achieve over 92% accuracy even in harsh weather conditions using optimized datasets.</span>
+                </div>
+            </details>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Sistem kaç adet İHA'yı aynı anda kontrol edebilir?</span>
+                    <span class="en">How many UAVs can the system control simultaneously?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Sürü (Swarm) teknolojimiz sayesinde tek bir merkezden 50+ İHA'nın koordineli görev yapmasına olanak tanıyoruz.</span>
+                    <span class="en">Thanks to our Swarm technology, we enable 50+ UAVs to perform coordinated missions from a single center.</span>
+                </div>
+            </details>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Mobil kontrol istasyonu desteği mevcut mu?</span>
+                    <span class="en">Is there mobile control station support?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Evet, hem saha tabletleri hem de taşınabilir çanta tipi yer kontrol istasyonları (GCS) ile tam uyumlu çalışıyoruz.</span>
+                    <span class="en">Yes, we work in full compatibility with both field tablets and portable briefcase-type ground control stations (GCS).</span>
+                </div>
+            </details>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Sistem güncellemeleri nasıl yapılıyor?</span>
+                    <span class="en">How are system updates performed?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Güvenli uydu hattı üzerinden veya fiziksel bağlantı ile periyodik olarak yazılım ve tehdit kütüphanesi güncellemeleri sunulmaktadır.</span>
+                    <span class="en">Software and threat library updates are provided periodically via a secure satellite link or physical connection.</span>
+                </div>
+            </details>
+            
+            <details class="sss-kutu anim-eleman">
+                <summary>
+                    <span class="tr">Donanım arızalarına karşı yedekleme (Redundancy) var mı?</span>
+                    <span class="en">Is there hardware redundancy against failures?</span>
+                </summary>
+                <div class="sss-cevap">
+                    <span class="tr">Kritik tüm alt sistemlerde (Uçuş kontrolcü, güç modülü vb.) çift yedekli (Fail-Safe) mimari kullanılmaktadır.</span>
+                    <span class="en">Dual-redundant (Fail-Safe) architecture is used in all critical subsystems (Flight controller, power module, etc.).</span>
+                </div>
+            </details>
+        </section>
+    </div> <!-- ANA SAYFA BİTİŞİ -->
+
+    <!-- ========================================== -->
+    <!-- 2. HAKKIMIZDA SAYFASI (YENİ TAM EKRAN TASARIM) -->
+    <!-- ========================================== -->
+    <div id="sayfa-hakkimizda" class="sayfa">
+        
+        <!-- NELER YAPIYORUZ -->
+        <div class="tam-ekran-blok hizmetler-bloku">
+            <h2 class="hizmet-baslik anim-eleman"><span class="tr">Neler Yapıyoruz?</span><span class="en">What We Do?</span></h2>
+            
+            <div class="kart-kapsayici">
+                <div class="hizmet-kart anim-eleman" style="transition-delay: 0.1s;">
+                    <h3>Gelişmiş Görüntü İşleme</h3>
+                    <p>Gelişmiş mimariler tabanlı yapay zeka algoritmalarımız ile otonom sistemler için gerçek zamanlı, yüksek hassasiyetli nesne tespiti (Object Detection) ve hedef takibi sağlıyoruz.</p>
+                </div>
+                <div class="hizmet-kart anim-eleman" style="transition-delay: 0.2s;">
+                    <h3>Otonom Sürü (Swarm) Yönetimi</h3>
+                    <p>Birden fazla insansız hava aracının aynı anda, birbiriyle iletişim halinde ve çarpışma önleyici sistemlerle donatılmış olarak koordineli görev icra etmesini sağlayan merkezi kontrol yazılımları geliştiriyoruz.</p>
+                </div>
+                <div class="hizmet-kart anim-eleman" style="transition-delay: 0.3s;">
+                    <h3>Donanım & Sistem Entegrasyonu</h3>
+                    <p>Geliştirdiğimiz yazılımları uçuş kontrolcüleri, yüksek performanslı gömülü sistemler ve özel motor sürücüleri ile sıfır gecikme prensibiyle entegre ederek uçtan uca kusursuz savunma çözümleri üretiyoruz.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BİZ KİMİZ -->
+        <div class="tam-ekran-blok h-blok">
+            <div class="h-metin anim-eleman">
+                <h2><span class="tr">Biz Kimiz?</span><span class="en">Who Are We?</span></h2>
+                <p><span class="tr">TULPAR Savunma Sistemleri olarak bizler, sadece bugünün değil, yarının muharebe sahalarını ve sivil havacılık ekosistemini şekillendiren, ileri nesil otonom yazılım mimarilerinin ana tasarımcısıyız. Kendimizi geleneksel bir yazılım firması olarak tanımlamanın çok ötesinde; stratejik hava platformlarına bilişsel yetenekler aşılayan, onlara "görmeyi, anlamayı ve karar vermeyi" öğreten bir yüksek teknoloji üssü olarak görüyoruz. Kuruluş günümüzden bu yana değişmeyen temel felsefemiz, operasyonel süreçlerdeki insan faktöründen kaynaklı riskleri minimize ederek, yüksek stresli ve dinamik ortamlarda kendi muhakemesini yürütebilen, çevresel değişimleri anlık verilerle analiz edip saniyeler içinde yeni görev planları oluşturabilen tam otonom yapılar inşa etmektir.
+
+Geliştirdiğimiz her bir fonksiyonel kod bloğu, ülkemizin savunma kapasitesini perçinlemek ve küresel ölçekteki iş ortaklarımızın hava sahası güvenliğini mutlak bir koruma seviyesine ulaştırmak amacıyla en uç senaryolara göre optimize edilmektedir. Mühendislik kadromuz; saf matematiksel algoritma analizinden, büyük veriyi en verimli şekilde işleyen karmaşık veri yapılarına kadar savunma sanayiinin tüm kritik disiplinlerinde derin bir uzmanlık barındırmaktadır. Bu teknik birikimimiz sayesinde, NATO ve MIL-STD gibi uluslararası askeri standartlarla tam uyumlu, donanımsal arıza anında bile görevini sürdürebilen hata toleransı yüksek (fault-tolerant) ve siber mukavemeti maksimize edilmiş sistemler ortaya koyuyoruz.
+
+Otonom teknolojilerin gelecekteki rotasını çizerken, yapay zekanın sadece bilinen sınırlarını zorlamakla yetinmiyor; bilgisayarlı görü (computer vision) ve sinir ağları üzerinde yaptığımız Ar-Ge çalışmalarıyla bu sınırları her gün bir adım daha ileri taşıyoruz. TULPAR, statik çözümler üretmek yerine; karmaşık hava trafiği, asimetrik tehditler ve elektronik harp unsurlarının hakim olduğu modern harp sahalarında, her bir platformu bağımsız birer zeka birimi haline getirerek hava savunmasında otonom bir devrimin öncülüğünü yapmaktadır. Bizler, disiplinler arası mühendislik anlayışımızla gökyüzünün güvenliğini algoritmalara emanet ediyor, hatasız bir gelecek inşa ediyoruz.</span></p>
+                 
+				 <p><span class="en">Shaping the Future of Autonomous Systems
+As TULPAR Defense Systems, we are the lead architects of next-generation autonomous software architectures, shaping not only today's but also tomorrow's battlefields and civil aviation ecosystems. Defining ourselves as far more than a traditional software firm, we see ourselves as a high-technology powerhouse that instills cognitive capabilities into strategic aerial platforms—teaching them to "see, understand, and decide." Since our inception, our core philosophy has remained unchanged: to minimize risks arising from the human factor in operational processes and to build fully autonomous structures capable of exercising their own judgment in high-stress, dynamic environments, analyzing environmental changes through real-time data, and generating new mission plans within seconds.
+
+Every functional block of code we develop is optimized for extreme scenarios, aiming to bolster our nation's defense capacity and elevate the airspace security of our global partners to an absolute level of protection. Our engineering staff possesses deep expertise in all critical disciplines of the defense industry, ranging from pure mathematical algorithm analysis to complex data structures that process big data with maximum efficiency. Through this technical expertise, we deliver high fault-tolerant and cyber-resilient systems that are fully compliant with international military standards such as NATO and MIL-STD, ensuring mission continuity even in the event of hardware failure.
+
+While charting the future course of autonomous technologies, we do not settle for merely pushing the known boundaries of artificial intelligence; we advance these boundaries every day through R&D conducted on computer vision and neural networks. Rather than producing static solutions, TULPAR leads an autonomous revolution in air defense by transforming each platform into an independent unit of intelligence within modern battlefields dominated by complex air traffic, asymmetric threats, and electronic warfare elements. With our interdisciplinary engineering approach, we entrust the security of the skies to algorithms and build an error-free future.</span></p>
+            </div>
+            <div class="h-gorsel anim-eleman">
+                <!-- KENDİ FOTOĞRAFININ ADINI BURAYA YAZ -->
+                <img src="assets/images/1.jpg" alt="Biz Kimiz">
+            </div>
+        </div>
+
+        <!-- TEKNOLOJİK ALTYAPIMIZ -->
+        <div class="tam-ekran-blok h-blok ters">
+            <div class="h-metin anim-eleman">
+                <h2><span class="tr">Teknolojik Altyapımız</span><span class="en">Our Technology</span></h2>
+                <p><span class="tr">Teknolojik Ekosistemimiz: Derin Öğrenme ve Uç Bilişim Senkronizasyonu
+Sistemlerimizin dijital kalbinde, modern yapay zekanın en ileri safhasını temsil eden ve milyonlarca parametreyi milisaniyeler mertebesinde işleme kapasitesine sahip özelleştirilmiş derin öğrenme modelleri yatmaktadır. TULPAR Savunma Sistemleri olarak vizyonumuz, sadece standart bir yazılım katmanı oluşturmanın çok ötesine geçmektedir; bizler, fiziksel donanımla tam entegrasyon içerisinde çalışan, düşük gecikmeli ve yüksek performanslı Uç Bilişim (Edge Computing) mimarileri inşa ediyoruz. Bu mimari sayesinde, veri merkezlerine olan bağımlılığı minimize ederek, karar alma mekanizmalarını doğrudan sahadaki platformun üzerinde gerçekleştiriyoruz.
+
+Yüksek çözünürlüklü optik sensörlerden ve termal kamera sistemlerinden gelen kesintisiz canlı görüntü akışları, kendi laboratuvarlarımızda özel olarak eğittiğimiz nesne tespit modellerimizle süzgeçten geçirilmektedir. Geliştirdiğimiz otonom hedef tespiti ve dinamik hareketli obje takibi algoritmaları, en zorlu meteorolojik koşullarda ve karmaşık arka planlarda dahi %90’ın üzerindeki doğruluk oranlarıyla görev icra etmektedir. Bu yüksek başarı oranı, sistemlerimizin muharebe sahasında dost-düşman ayrımını hatasız yapabilmesinin ve hedefleri gerçek zamanlı olarak kilitleyebilmesinin teminatıdır.
+
+Teknolojik üstünlüğümüzün bir diğer temel taşı ise veri güvenliği ve ileri seviye kriptolojidir. Verinin üretildiği andan aktarıldığı ana kadar geçen her aşamada, sistemimizin ayrılmaz bir parçası olan uçtan uca şifreleme protokolleri devreye girmektedir. Gelişmiş donanım bileşenlerinin; yani yüksek hassasiyetli adım motorlarının, mikron düzeyinde veri üreten enkoderlerin ve yapay zeka işlem yükünü sırtlayan donanımsal hızlandırıcıların (NPU/GPU) birbiriyle kusursuz bir senkronizasyon içinde çalışması için düşük seviyeli (low-level) programlama dilleriyle donanım sürücüleri ve çekirdek seviyesinde optimizasyonlar gerçekleştiriyoruz.
+
+Sahada aktif görev yapan bir İnsansız Hava Aracı’nın (İHA) elde ettiği anlık istihbarat verileri, yer kontrol istasyonuna en üst düzey askeri protokollerle şifrelenerek aktarılmaktadır. Bu süreçte uyguladığımız siber savunma katmanları, elektronik harp unsurlarına ve sızma girişimlerine karşı aşılmaz bir duvar örerek veri bütünlüğünü koruma altına almaktadır. TULPAR, mekanik hassasiyeti yazılımsal zekâ ve siber dayanıklılıkla birleştirerek, geleceğin savunma teknolojilerinde standartları belirleyen bir güç olmaya devam etmektedir.</span></p>
+                   
+				   <p><span class="en">Our Technological Ecosystem: Synchronization of Deep Learning and Edge Computing
+At the digital heart of our systems lie customized deep learning models that represent the cutting edge of modern artificial intelligence, capable of processing millions of parameters in a matter of milliseconds. As TULPAR Defense Systems, our vision goes far beyond merely creating a standard software layer; we build low-latency, high-performance Edge Computing architectures that operate in full integration with physical hardware. Through this architecture, we minimize dependency on data centers and execute decision-making mechanisms directly on the field-deployed platform.
+
+Continuous live video streams from high-resolution optical sensors and thermal imaging systems are filtered through our proprietary object detection models, specifically trained in our own laboratories. The autonomous target detection and dynamic moving object tracking algorithms we have developed perform missions with accuracy rates exceeding 90%, even under the most challenging meteorological conditions and complex backgrounds. This high success rate ensures that our systems can flawlessly distinguish between friend and foe on the battlefield and lock onto targets in real-time.
+
+Another cornerstone of our technological superiority is data security and advanced cryptology. From the moment data is generated until it is transmitted, end-to-end encryption protocols—an integral part of our system—are activated. To ensure seamless synchronization between advanced hardware components—such as high-precision stepper motors, encoders generating micron-level data, and hardware accelerators (NPU/GPU) that shoulder the AI processing load—we perform hardware driver and kernel-level optimizations using low-level programming languages.
+
+Instant intelligence data acquired by an Unmanned Aerial Vehicle (UAV) active in the field is transmitted to the ground control station, encrypted via the highest-level military protocols. The cyber defense layers we implement during this process create an impenetrable wall against electronic warfare elements and infiltration attempts, securing data integrity. By combining mechanical precision with software intelligence and cyber resilience, TULPAR continues to be a force that sets the standards in the defense technologies of the future.</span></p>
+            </div>
+            <div class="h-gorsel anim-eleman">
+                 <!-- KENDİ FOTOĞRAFININ ADINI BURAYA YAZ -->
+                <img src="assets/images/2.jpg" alt="Teknolojik Altyapı">
+            </div>
+        </div>
+
+        <!-- GELECEK VİZYONUMUZ -->
+        <div class="tam-ekran-blok h-blok">
+            <div class="h-metin anim-eleman">
+                <h2><span class="tr">Gelecek Vizyonumuz</span><span class="en">Our Vision</span></h2>
+                <p><span class="tr">TULPAR Savunma Sistemleri: Otonom Geleceğin Mimarı
+TULPAR Savunma Sistemleri olarak, modern muharebe sahasının karmaşık dinamiklerini ve sivil havacılığın her geçen gün evrilen güvenlik ihtiyaçlarını analiz ederek, bu gereksinimlere yanıt veren yenilikçi otonom yazılım mimarileri inşa ediyoruz. Bizler kendimizi sadece bir yazılım şirketi olarak değil, gökyüzünde süzülen stratejik donanımlara bilişsel bir zekâ ve durumsal farkındalık katan bir teknoloji üssü olarak konumlandırıyoruz. Kuruluşumuzdan bu yana temel felsefemiz; insan hatasını kritik operasyonel süreçlerden tamamen arındıran, değişken sahalarda kendi karar mekanizmalarını yürütebilen ve görev süresi boyunca karşılaştığı çevresel faktörlere milisaniyeler içerisinde adapte olabilen uçtan uca sistemler tasarlamaktır.
+
+Geliştirdiğimiz her bir satır kod, ülkemizin stratejik savunma hedeflerini desteklemek ve global partnerlerimizin hava sahası güvenliğini sarsılmaz bir seviyeye taşımak üzere en ince ayrıntısına kadar optimize edilmektedir. Mühendislik kadromuz; ileri düzey algoritma analizinden karmaşık veri yapılarının yönetimine, yüksek çözünürlüklü bilgisayarlı görü (computer vision) sistemlerinden çok katmanlı derin öğrenme ağlarına kadar geniş bir spektrumda uzmanlığa sahiptir. Bu teknik yetkinlik, savunma sanayiinin tavizsiz standartlarına uygun, hata toleransı yüksek (fault-tolerant) ve siber saldırılara karşı dayanıklı sistemler geliştirmemize olanak tanımaktadır.
+
+Otonom sistemlerin geleceğine yön verirken, yapay zekanın mevcut sınırlarını sadece zorlamakla kalmıyor, bu sınırları her geçen gün yeniden tanımlıyoruz. Özellikle asimetrik tehditlere ve hibrit savaş unsurlarına karşı hava savunma konseptlerini temelden dönüştürüyoruz. Geleneksel radar sistemlerinin kısıtlı kaldığı noktalarda, gelişmiş optik ve termal sensör füzyonu teknolojilerimizle "görünmeyeni görünür kılarak" operasyonel kör noktaları ortadan kaldırıyoruz. Sahada görev yapan her bir platformumuz, merkezi bir komuta yapısına ihtiyaç duymadan, sürü zekası ve bağımsız karar alma yetenekleriyle donatılmış birer taktik unsur olarak tasarlanmaktadır.
+
+Amacımız, en zorlu harp koşullarında, sinyal karıştırmanın (jamming) ve elektronik harp unsurlarının yoğun olduğu ortamlarda dahi kesintisiz, güvenli ve tam otonom bir koruma kalkanı oluşturmaktır. TULPAR Savunma Sistemleri, dijital dünyanın hızı ile fiziksel sahanın gerçekliğini birleştirerek, küresel ölçekte hava savunmasında yeni bir çağın öncüsü olma kararlılığını sürdürmektedir. Veriden aldığımız güçle, sadece bugünü değil, yarının savunma teknolojilerini bugünden hayata geçiriyoruz.</span></p>
+                 
+				 <p><span class="en">TULPAR Defense Systems: Architect of the Autonomous Future
+As TULPAR Defense Systems, we analyze the complex dynamics of the modern battlefield and the ever-evolving security needs of civil aviation to build innovative autonomous software architectures that address these requirements. We position ourselves not merely as a software company, but as a technology powerhouse that instills cognitive intelligence and situational awareness into strategic assets soaring through the skies. Since our founding, our core philosophy has been to design end-to-end systems that completely eliminate human error from critical operational processes, execute their own decision-making mechanisms in volatile environments, and adapt to environmental factors encountered during a mission within milliseconds.
+
+Every line of code we develop is optimized to the finest detail to support our nation's strategic defense objectives and to elevate the airspace security of our global partners to an unshakeable level. Our engineering team possesses expertise across a wide spectrum, from advanced algorithm analysis and complex data structure management to high-resolution computer vision systems and multi-layered deep learning networks. This technical competency enables us to develop systems that are high in fault tolerance, resilient against cyberattacks, and compliant with the uncompromising standards of the defense industry.
+
+In shaping the future of autonomous systems, we don't just push the existing boundaries of artificial intelligence; we redefine them every single day. We are fundamentally transforming air defense concepts, particularly against asymmetric threats and hybrid warfare elements. Where traditional radar systems fall short, we eliminate operational blind spots by "making the invisible visible" through our advanced optical and thermal sensor fusion technologies. Each of our platforms operating in the field is designed as a tactical unit equipped with swarm intelligence and independent decision-making capabilities, functioning without the need for a centralized command structure.
+
+Our objective is to create an uninterrupted, secure, and fully autonomous protection shield, even in the most grueling combat conditions and environments where signal jamming and electronic warfare elements are intense. By merging the speed of the digital world with the reality of the physical field, TULPAR Defense Systems remains committed to pioneering a new era in global air defense. With the power we derive from data, we are bringing the defense technologies of tomorrow to life today.</span></p>
+            </div>
+            <div class="h-gorsel anim-eleman">
+                 <!-- KENDİ FOTOĞRAFININ ADINI BURAYA YAZ -->
+                <img src="assets/images/3.jpg" alt="Vizyonumuz">
+            </div>
+        </div>
+
+    </div> <!-- HAKKIMIZDA SAYFASI BİTİŞİ -->
+
+    <!-- ========================================== -->
+    <!-- GLOBAL FOOTER                              -->
+    <!-- ========================================== -->
+    <footer class="global-footer">
+        <div class="footer-grid">
+            <div class="f-kutu anim-eleman">
+                <h3><span class="tr">TULPAR Merkez Karargah</span><span class="en">TULPAR Headquarters</span></h3>
+                <p><strong><span class="tr">Birim Temsilciliği:</span><span class="en">Unit Rep:</span></strong> Global Operasyonlar ve Kriz Yönetimi</p>
+                <p><strong><span class="tr">Açık Adres:</span><span class="en">Address:</span></strong> Teknopark Bilişim Vadisi, Havacılık Kampüsü, A-Blok Kat: 4, İstanbul</p>
+                <p><strong><span class="tr">Telefon:</span><span class="en">Phone:</span></strong> +90 312 555 44 33</p>
+                <p><strong><span class="tr">E-Posta:</span><span class="en">E-Mail:</span></strong> hq-operations@tulpar-savunma.com.tr</p>
+                
+                <div class="sosyal-medya">
+                    <a href="#" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            
+            <div class="f-kutu anim-eleman" style="transition-delay: 0.2s;">
+                <h3><span class="tr">Sistem Partnerleri</span><span class="en">System Partners</span></h3>
+                <p><strong><span class="tr">Donanım Entegrasyonu:</span><span class="en">Hardware Integration:</span></strong> ASELSAN, Roketsan</p>
+                <p><strong><span class="tr">Yapay Zeka:</span><span class="en">AI Architecture:</span></strong> NVIDIA, Baykar</p>
+                <p><strong><span class="tr">Bulut Güvenliği:</span><span class="en">Cloud Security:</span></strong> HAVELSAN Siber Savunma</p>
+            </div>
+            
+            <div class="harita-kutu anim-eleman" style="transition-delay: 0.4s;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3019.574488339598!2d29.4539569!3d40.8153392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cad01a2f6460e5%3A0x6b825227d825a072!2zQmlsacWfaW0gVmFkaXNp!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str" loading="lazy"></iframe>
+            </div>
+        </div>
+        <div class="footer-alt"><span class="tr">&copy; 2026 TULPAR Savunma Sistemleri. Tüm Hakları Saklıdır. | Tasarım: <span>Master Oogway</span></span></div>
+    </footer>
+
+
+    <script src="js/home.js"></script>
+</body>
+</html>

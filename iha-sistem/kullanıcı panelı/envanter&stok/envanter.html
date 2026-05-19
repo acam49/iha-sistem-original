@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tulpar Savunma - Envanter & Stok</title>
+    <link rel="stylesheet" href="style_envanter.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h1>TULPAR</h1>
+                <p>SAVUNMA SİSTEMLERİ</p>
+                <span class="v-tag">v1.0</span>
+            </div>
+            
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="index.html">Ana Panel</a></li>
+                    <li class="active"><a href="#">Envanter & Stok</a></li>
+                    <li><a href="gorev_planlama.html">Görev Planlama</a></li>
+                    <li><a href="bakim_loglari.html">Bakım & Uçuş Logları</a></li>
+                    <li><a href="personel_yonetimi.html">Personel Yönetimi</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="exit-btn">Sistemden Çıkış Yap</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="forms-grid">
+                
+                <div class="glass-panel form-card">
+                    <h3 class="panel-title">YENİ İHA EKLE</h3>
+                    <form id="ihaEkleForm">
+                        <input type="text" id="ihaId" placeholder="İhaID (#)" required>
+                        <input type="text" id="ihaAd" placeholder="Ad (Örn: Gökdoğan-1)" required>
+                        <input type="text" id="ihaModel" placeholder="Model (Sabit/Döner Kanat)" required>
+                        <input type="text" id="ihaSeri" placeholder="Seri No" required>
+                        <select id="ihaDurum" required>
+                            <option value="Müsait">Müsait</option>
+                            <option value="Uçuşta">Uçuşta</option>
+                            <option value="Bakımda">Bakımda</option>
+                            <option value="Arızalı">Arızalı</option>
+                        </select>
+                        <button type="submit" class="btn btn-dark">Kaydet</button>
+                    </form>
+                </div>
+
+                <div class="glass-panel form-card">
+                    <h3 class="panel-title">İHA GÜNCELLE</h3>
+                    <form id="ihaGuncelleForm">
+                        <input type="text" placeholder="ID Giriniz" required>
+                        <input type="text" placeholder="Yeni Ad (Opsiyonel)">
+                        <select>
+                            <option value="">Durum Güncelle</option>
+                            <option value="Müsait">Müsait</option>
+                            <option value="Uçuşta">Uçuşta</option>
+                            <option value="Bakımda">Bakımda</option>
+                            <option value="Arızalı">Arızalı</option>
+                        </select>
+                        <button type="button" class="btn btn-turquoise">Güncelle</button>
+                    </form>
+                </div>
+
+                <div class="glass-panel form-card">
+                    <h3 class="panel-title">YENİ PARÇA EKLE</h3>
+                    <form id="parcaEkleForm">
+                        <input type="text" id="pId" placeholder="ParcaID (#)" required>
+                        <input type="text" id="pAd" placeholder="Parça Adı" required>
+                        <select id="pTip" required>
+                            <option value="" disabled selected>Tip Seçin</option>
+                            <option value="Motor">Motor</option>
+                            <option value="Pervane">Pervane</option>
+                            <option value="Kamera">Kamera</option>
+                            <option value="Sensör">Sensör</option>
+                            <option value="Batarya">Batarya</option>
+                        </select>
+                        <input type="number" id="pStok" placeholder="Stok Adedi" required>
+                        <input type="number" id="pKritik" placeholder="Kritik Seviye (Uyarı Sınırı)" required>
+                        <button type="submit" class="btn btn-dark">Ekle</button>
+                    </form>
+                </div>
+
+                <div class="glass-panel form-card">
+                    <h3 class="panel-title">STOK GÜNCELLE</h3>
+                    <form id="stokGuncelleForm">
+                        <input type="text" placeholder="ParcaID Giriniz" required>
+                        <input type="number" placeholder="Yeni Stok Adedi">
+                        <input type="number" placeholder="Yeni Kritik Seviye">
+                        <button type="button" class="btn btn-yellow">Yenile</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="tables-grid">
+                
+                <div class="glass-panel table-card">
+                    <h3 class="panel-title">İHA (PLATFORM ENVANTERİ)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ad</th>
+                                <th>Model</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ihaTablosu">
+                            <tr>
+                                <td>101</td>
+                                <td>Gökdoğan-1</td>
+                                <td>Sabit Kanat</td>
+                                <td><span class="badge badge-green" style="background:#2ecc71; color:#000;">Müsait</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="glass-panel table-card">
+                    <h3 class="panel-title">ENVANTER (DONANIM VE PARÇA)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Parça Adı</th>
+                                <th>Tip</th>
+                                <th>Stok / Kritik</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stokTablosu">
+                            </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- 1. YENİ İHA EKLEME TESTİ ---
+        document.getElementById('ihaEkleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let id = document.getElementById('ihaId').value;
+            let ad = document.getElementById('ihaAd').value;
+            let model = document.getElementById('ihaModel').value;
+            let durum = document.getElementById('ihaDurum').value;
+
+            // Duruma göre renk belirleme
+            let bg = durum === 'Müsait' ? '#2ecc71' : (durum === 'Arızalı' ? '#e74c3c' : '#f39c12');
+            let color = durum === 'Müsait' || durum === 'Bakımda' ? '#000' : '#fff';
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${id}</td>
+                <td>${ad}</td>
+                <td>${model}</td>
+                <td><span class="badge" style="background:${bg}; color:${color};">${durum}</span></td>
+            `;
+            document.getElementById('ihaTablosu').appendChild(tr);
+            this.reset();
+        });
+
+        // --- 2. YENİ PARÇA EKLEME VE KRİTİK SEVİYE KONTROLÜ ---
+        document.getElementById('parcaEkleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let id = document.getElementById('pId').value;
+            let ad = document.getElementById('pAd').value;
+            let tip = document.getElementById('pTip').value;
+            let stok = parseInt(document.getElementById('pStok').value);
+            let kritik = parseInt(document.getElementById('pKritik').value);
+
+            /* ==============================================================
+               BACKEND (PHP) İÇİN MANTIK NOTU:
+               Eğer (Stok_Adedi <= Kritik_Seviye) ise sistem "Kritik Stok" 
+               uyarısı verir. Front-end'de bunu kırmızı badge ile gösteriyoruz.
+            ============================================================== */
+            
+            let durumHtml = "";
+            let stokGosterim = `<b>${stok}</b> / ${kritik}`;
+
+            if (stok <= kritik) {
+                // Eğer stok kritik seviyenin altına düştüyse kırmızı uyarı bas!
+                durumHtml = `<span class="badge" style="background:#e74c3c; color:#fff; box-shadow: 0 0 8px #e74c3c;">Kritik Stok</span>`;
+            } else {
+                durumHtml = `<span class="badge" style="background:#2ecc71; color:#000;">Yeterli</span>`;
+            }
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${id}</td>
+                <td>${ad}</td>
+                <td>${tip}</td>
+                <td>${stokGosterim}</td>
+                <td>${durumHtml}</td>
+            `;
+            document.getElementById('stokTablosu').appendChild(tr);
+            this.reset();
+        });
+
+        // Test için başlangıçta iki adet parça ekliyoruz ki görsellik anlaşılsın:
+        window.onload = function() {
+            // Örnek 1: Kritik Seviyenin Üstünde (Yeterli)
+            let tr1 = document.createElement('tr');
+            tr1.innerHTML = `<td>201</td> <td>Lidar Sensörü</td> <td>Sensör</td> <td><b>15</b> / 5</td> <td><span class="badge" style="background:#2ecc71; color:#000;">Yeterli</span></td>`;
+            document.getElementById('stokTablosu').appendChild(tr1);
+
+            // Örnek 2: Kritik Seviyenin Altında (KRİTİK STOK!)
+            let tr2 = document.createElement('tr');
+            tr2.innerHTML = `<td>202</td> <td>22.1V Batarya</td> <td>Batarya</td> <td><b style="color:#e74c3c;">2</b> / 5</td> <td><span class="badge" style="background:#e74c3c; color:#fff; box-shadow: 0 0 8px #e74c3c;">Kritik Stok</span></td>`;
+            document.getElementById('stokTablosu').appendChild(tr2);
+        };
+    </script>
+</body>
+</html>

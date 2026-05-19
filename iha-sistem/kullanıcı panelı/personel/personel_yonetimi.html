@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tulpar Savunma - Personel Yönetimi</title>
+    <link rel="stylesheet" href="style_personel.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h1>TULPAR</h1>
+                <p>SAVUNMA SİSTEMLERİ</p>
+                <span class="v-tag">v1.0</span>
+            </div>
+            
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="index.html">Ana Panel</a></li>
+                    <li class="active"><a href="#">Personel Yönetimi</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="exit-btn">Sistemden Çıkış Yap</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="left-forms">
+                
+                <div class="glass-panel">
+                    <h3 class="panel-title">YENİ PERSONEL</h3>
+                    <form id="ekleForm" class="task-form">
+                        <input type="text" id="yeniId" placeholder="ID (10 Hane)" required>
+                        <input type="text" id="yeniAd" placeholder="Ad" required>
+                        <input type="text" id="yeniSoyad" placeholder="Soyad" required>
+                        <input type="tel" id="yeniTelefon" placeholder="Telefon Numarası" required>
+                        <input type="email" id="yeniEposta" placeholder="E-posta Adresi" required>
+                        
+                        <input type="password" id="yeniSifre" placeholder="Şifre" required>
+                        <select id="yeniYetki" required>
+                            <option value="Admin">Admin</option>
+                            <option value="Yönetici">Yönetici</option>
+                            <option value="Muhasebeci">Muhasebeci</option>
+                            <option value="İşçi">İşçi</option>
+                            <option value="Personel" selected>Personel</option>
+                        </select>
+                        <button type="submit" class="btn btn-dark">Kaydet</button>
+                    </form>
+                </div>
+
+                <div class="glass-panel">
+                    <h3 class="panel-title">BİLGİ GÜNCELLE</h3>
+                    <form id="guncelleForm" class="task-form">
+                        <input type="text" id="gMevcutId" placeholder="Mevcut ID Giriniz" required>
+                        <input type="text" id="gYeniId" placeholder="Yeni ID (Opsiyonel)">
+                        <input type="text" id="gYeniAd" placeholder="Yeni Ad (Opsiyonel)">
+                        <input type="text" id="gYeniSoyad" placeholder="Yeni Soyad (Opsiyonel)">
+                        <input type="tel" id="gYeniTelefon" placeholder="Yeni Telefon (Opsiyonel)">
+                        <input type="email" id="gYeniEposta" placeholder="Yeni E-posta (Opsiyonel)">
+                        
+                        <select id="gYeniYetki">
+                            <option value="">Rütbe Değiştir (Opsiyonel)</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Yönetici">Yönetici</option>
+                            <option value="Muhasebeci">Muhasebeci</option>
+                            <option value="İşçi">İşçi</option>
+                            <option value="Personel">Personel</option>
+                        </select>
+                        <p class="form-info">Lütfen değiştirmek istediğiniz alanları doldurunuz.</p>
+                        <button type="submit" class="btn btn-cyan">Verileri Yenile</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="glass-panel">
+                <h3 class="panel-title">PERSONEL LİSTESİ</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>ID</th>
+                            <th>Telefon</th>
+                            <th>E-posta</th>
+                            <th>Yetki</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="personelTablosu">
+                        <tr data-id="2310213071">
+                            <td class="td-isim">ABDULLAH ETA</td>
+                            <td class="td-id">2310213071</td>
+                            <td class="td-telefon">0555 123 45 67</td>
+                            <td class="td-eposta">abdullah@tulpar.com</td>
+                            <td class="td-yetki"><span class="badge b-admin">Admin</span></td>
+                            <td><button class="btn-red" onclick="personelSil(this)">Sil</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Yetki ismine göre doğru CSS sınıfını döndüren fonksiyon
+        function yetkiClassBul(yetki) {
+            switch(yetki) {
+                case "Admin": return "b-admin";
+                case "Yönetici": return "b-yonetici";
+                case "Muhasebeci": return "b-muhasebeci";
+                case "İşçi": return "b-isci";
+                case "Personel": return "b-personel";
+                default: return "b-personel";
+            }
+        }
+
+        // --- YENİ PERSONEL EKLEME ---
+        document.getElementById('ekleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let id = document.getElementById('yeniId').value;
+            let ad = document.getElementById('yeniAd').value;
+            let soyad = document.getElementById('yeniSoyad').value;
+            let telefon = document.getElementById('yeniTelefon').value;
+            let eposta = document.getElementById('yeniEposta').value;
+            let yetki = document.getElementById('yeniYetki').value;
+            
+            let adSoyad = (ad + " " + soyad).toUpperCase();
+            let yetkiCss = yetkiClassBul(yetki);
+
+            let tablo = document.getElementById('personelTablosu');
+            
+            // Tabloda bu ID var mı kontrolü
+            if(document.querySelector(`tr[data-id="${id}"]`)) {
+                alert("Bu ID'ye sahip bir personel zaten var!");
+                return;
+            }
+
+            let yeniSatir = document.createElement('tr');
+            yeniSatir.setAttribute('data-id', id); // Satıra kimlik veriyoruz ki güncellerken bulalım
+            
+            yeniSatir.innerHTML = `
+                <td class="td-isim">${adSoyad}</td>
+                <td class="td-id">${id}</td>
+                <td class="td-telefon">${telefon}</td>
+                <td class="td-eposta">${eposta}</td>
+                <td class="td-yetki"><span class="badge ${yetkiCss}">${yetki}</span></td>
+                <td><button class="btn-red" onclick="personelSil(this)">Sil</button></td>
+            `;
+
+            tablo.appendChild(yeniSatir);
+            this.reset(); // Formu temizle
+        });
+
+        // --- BİLGİ GÜNCELLEME ---
+        document.getElementById('guncelleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let mevcutId = document.getElementById('gMevcutId').value;
+            // Tablodan o kişiyi bul (data-id özelliğine göre)
+            let satir = document.querySelector(`tr[data-id="${mevcutId}"]`);
+
+            if(!satir) {
+                alert("Girdiğiniz ID'ye ait personel bulunamadı!");
+                return;
+            }
+
+            // Formdaki yeni verileri çek
+            let yeniId = document.getElementById('gYeniId').value;
+            let yeniAd = document.getElementById('gYeniAd').value;
+            let yeniSoyad = document.getElementById('gYeniSoyad').value;
+            let yeniTelefon = document.getElementById('gYeniTelefon').value;
+            let yeniEposta = document.getElementById('gYeniEposta').value;
+            let yeniYetki = document.getElementById('gYeniYetki').value;
+
+            // Eğer yeni ID girildiyse değiştir
+            if(yeniId !== "") {
+                satir.setAttribute('data-id', yeniId);
+                satir.querySelector('.td-id').innerText = yeniId;
+            }
+
+            // İsim veya Soyisim değiştiyse
+            if(yeniAd !== "" || yeniSoyad !== "") {
+                let guncelAd = yeniAd !== "" ? yeniAd : "";
+                let guncelSoyad = yeniSoyad !== "" ? yeniSoyad : "";
+                satir.querySelector('.td-isim').innerText = (guncelAd + " " + guncelSoyad).trim().toUpperCase();
+            }
+
+            // Telefon değiştiyse
+            if(yeniTelefon !== "") {
+                satir.querySelector('.td-telefon').innerText = yeniTelefon;
+            }
+
+            // E-posta değiştiyse
+            if(yeniEposta !== "") {
+                satir.querySelector('.td-eposta').innerText = yeniEposta;
+            }
+
+            // Rütbe değiştiyse
+            if(yeniYetki !== "") {
+                let yetkiCss = yetkiClassBul(yeniYetki);
+                satir.querySelector('.td-yetki').innerHTML = `<span class="badge ${yetkiCss}">${yeniYetki}</span>`;
+            }
+
+            alert("Personel bilgileri başarıyla güncellendi.");
+            this.reset(); // Güncelleme formunu temizle
+        });
+
+        // --- PERSONEL SİLME ---
+        function personelSil(buton) {
+            if(confirm("Bu personeli sistemden silmek istediğinize emin misiniz?")) {
+                buton.parentElement.parentElement.remove();
+            }
+        }
+    </script>
+</body>
+</html>

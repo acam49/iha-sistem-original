@@ -1,0 +1,111 @@
+/* Ortak giriş / kayıt sayfaları */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+.auth-page {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+}
+.auth-container {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,206,209,0.3);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 30px rgba(0,206,209,0.2);
+}
+.auth-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.auth-logo h1 {
+    color: #00ced1;
+    font-size: 28px;
+    letter-spacing: 3px;
+}
+.auth-logo p {
+    color: #888;
+    font-size: 12px;
+    margin-top: 5px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    color: #00ced1;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,206,209,0.3);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: #00ced1;
+    box-shadow: 0 0 10px rgba(0,206,209,0.3);
+}
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #00ced1, #008b8b);
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,206,209,0.4);
+}
+.msg-error {
+    background: rgba(255,0,0,0.2);
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+.msg-success {
+    background: rgba(0,206,209,0.15);
+    border: 1px solid #00ced1;
+    color: #7fe8eb;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+.auth-footer {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 14px;
+}
+.auth-footer a {
+    color: #00ced1;
+    text-decoration: none;
+}
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+.auth-footer .sep {
+    color: #555;
+    margin: 0 8px;
+}

@@ -1,0 +1,81 @@
+-- 1. PERSONEL (Kullanıcı Yönetimi)
+CREATE TABLE IF NOT EXISTS PERSONEL (
+    PersonelID INT NOT NULL AUTO_INCREMENT,
+    Ad VARCHAR(50) NOT NULL,
+    Soyad VARCHAR(50) NOT NULL,
+    Eposta VARCHAR(100) NOT NULL,
+    Sifre_Hash VARCHAR(256) NOT NULL,
+    Rol VARCHAR(20) NOT NULL DEFAULT 'Yazılımcı',
+    Telefon VARCHAR(15),
+    PRIMARY KEY (PersonelID),
+    UNIQUE KEY uq_personel_eposta (Eposta)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. IHA (Platform Envanteri)
+CREATE TABLE IF NOT EXISTS IHA (
+    IhaID INT NOT NULL AUTO_INCREMENT,
+    Ad VARCHAR(50) NOT NULL,
+    Model VARCHAR(50) NOT NULL,
+    Seri_No VARCHAR(50) NOT NULL,
+    Durum ENUM('Müsait', 'Uçuşta', 'Bakımda', 'Arızalı') NOT NULL DEFAULT 'Müsait',
+    PRIMARY KEY (IhaID),
+    UNIQUE KEY uq_iha_serino (Seri_No)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. ENVANTER (Donanım ve Parça Takibi)
+CREATE TABLE IF NOT EXISTS ENVANTER (
+    ParcaID INT NOT NULL AUTO_INCREMENT,
+    Parca_Adi VARCHAR(100) NOT NULL,
+    Tip VARCHAR(50) NOT NULL,
+    Stok_Adedi INT NOT NULL DEFAULT 0,
+    Kritik_Seviye INT DEFAULT 0,
+    PRIMARY KEY (ParcaID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. GOREV (Operasyon Planlama)
+CREATE TABLE IF NOT EXISTS GOREV (
+    GorevID INT NOT NULL AUTO_INCREMENT,
+    Baslik VARCHAR(100) NOT NULL,
+    Detay TEXT,
+    Planlanan_Tarih DATE NOT NULL,
+    Lokasyon VARCHAR(100),
+    PRIMARY KEY (GorevID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 5. UCUS_LOGU (Operasyonel Veriler)
+CREATE TABLE IF NOT EXISTS UCUS_LOGU (
+    LogID INT NOT NULL AUTO_INCREMENT,
+    IhaID INT NOT NULL,
+    GorevID INT,
+    PilotID INT NOT NULL,
+    Baslangic_Saati DATETIME NOT NULL,
+    Bitis_Saati DATETIME NOT NULL,
+    Hava_Durumu VARCHAR(50),
+    PRIMARY KEY (LogID),
+    CONSTRAINT fk_ucus_iha FOREIGN KEY (IhaID) REFERENCES IHA(IhaID) ON DELETE CASCADE,
+    CONSTRAINT fk_ucus_gorev FOREIGN KEY (GorevID) REFERENCES GOREV(GorevID) ON DELETE SET NULL,
+    CONSTRAINT fk_ucus_pilot FOREIGN KEY (PilotID) REFERENCES PERSONEL(PersonelID) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 6. BAKIM_KAYDI (Arıza ve Teknik Takip)
+CREATE TABLE IF NOT EXISTS BAKIM_KAYDI (
+    BakimID INT NOT NULL AUTO_INCREMENT,
+    IhaID INT NOT NULL,
+    SorumluID INT NOT NULL,
+    Tarih DATE NOT NULL,
+    Ariza_Notu VARCHAR(500) NOT NULL,
+    Cozum_Notu VARCHAR(500),
+    PRIMARY KEY (BakimID),
+    CONSTRAINT fk_bakim_iha FOREIGN KEY (IhaID) REFERENCES IHA(IhaID) ON DELETE CASCADE,
+    CONSTRAINT fk_bakim_sorumlu FOREIGN KEY (SorumluID) REFERENCES PERSONEL(PersonelID) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 7. MASRAF (Mali Takip)
+CREATE TABLE IF NOT EXISTS MASRAF (
+    MasrafID INT NOT NULL AUTO_INCREMENT,
+    Ilgili_Kayit_ID INT,
+    Miktar DECIMAL(10,2) NOT NULL,
+    Kategori VARCHAR(50) NOT NULL,
+    Tarih DATE NOT NULL,
+    PRIMARY KEY (MasrafID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
