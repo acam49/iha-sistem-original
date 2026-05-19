@@ -1,14 +1,17 @@
 <?php
 // filepath: config.php
 // Veritabanı ve Güvenlik Yapılandırması (Railway / Local Uyumlu)
-$dbHost = getenv('MYSQLHOST') ?: 'localhost';
-if (getenv('MYSQLPORT')) {
-    $dbHost .= ';port=' . getenv('MYSQLPORT');
+$dbHost = getenv('MYSQLHOST') ?: ($_ENV['MYSQLHOST'] ?? ($_SERVER['MYSQLHOST'] ?? 'localhost'));
+$dbPort = getenv('MYSQLPORT') ?: ($_ENV['MYSQLPORT'] ?? ($_SERVER['MYSQLPORT'] ?? '3306'));
+
+if ($dbPort && $dbPort !== '3306') {
+    $dbHost .= ';port=' . $dbPort;
 }
+
 define('DB_HOST', $dbHost);
-define('DB_NAME', getenv('MYSQLDATABASE') ?: 'iha_sistemi');
-define('DB_USER', getenv('MYSQLUSER') ?: 'root');
-define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
+define('DB_NAME', getenv('MYSQLDATABASE') ?: ($_ENV['MYSQLDATABASE'] ?? ($_SERVER['MYSQLDATABASE'] ?? 'iha_sistemi')));
+define('DB_USER', getenv('MYSQLUSER') ?: ($_ENV['MYSQLUSER'] ?? ($_SERVER['MYSQLUSER'] ?? 'root')));
+define('DB_PASS', getenv('MYSQLPASSWORD') ?: ($_ENV['MYSQLPASSWORD'] ?? ($_SERVER['MYSQLPASSWORD'] ?? '')));
 
 // SHA-256 için güvenlik anahtarı
 define('AUTH_SALT', 'IHA_SISTEM_2026_SECURE_KEY_X9kL2mP');
