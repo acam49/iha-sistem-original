@@ -20,7 +20,7 @@
     border-radius: 20px;
     padding: 40px;
     width: 100%;
-    max-width: 400px;
+    max-width: 700px;
     box-shadow: 0 0 30px rgba(0,206,209,0.2);
 }
 .auth-logo {
@@ -37,23 +37,37 @@
     font-size: 12px;
     margin-top: 5px;
 }
-.form-group {
-    margin-bottom: 20px;
+
+/* Form grid layout - 2 columns */
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* E-posta alanı full width */
+.form-group:nth-child(3) {
+    grid-column: 1 / -1;
+}
+
 .form-group label {
-    display: block;
     color: #00ced1;
-    margin-bottom: 8px;
-    font-size: 14px;
+    margin-bottom: 6px;
+    font-size: 13px;
 }
 .form-group input {
     width: 100%;
-    padding: 12px 15px;
+    padding: 10px 12px;
     background: rgba(255,255,255,0.1);
     border: 1px solid rgba(0,206,209,0.3);
     border-radius: 8px;
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     transition: all 0.3s;
 }
 .form-group input:focus {
@@ -62,8 +76,8 @@
     box-shadow: 0 0 10px rgba(0,206,209,0.3);
 }
 .btn-primary {
-    width: 100%;
-    padding: 14px;
+    grid-column: 1 / -1;
+    padding: 12px;
     background: linear-gradient(135deg, #00ced1, #008b8b);
     border: none;
     border-radius: 8px;
@@ -72,6 +86,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s;
+    margin-top: 5px;
 }
 .btn-primary:hover {
     transform: translateY(-2px);
@@ -112,4 +127,24 @@
 .auth-footer .sep {
     color: #555;
     margin: 0 8px;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .auth-container {
+        max-width: 100%;
+        padding: 30px 20px;
+    }
+    
+    form {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group:nth-child(3) {
+        grid-column: 1;
+    }
+    
+    .btn-primary {
+        grid-column: 1;
+    }
 }
