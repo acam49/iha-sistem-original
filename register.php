@@ -1,6 +1,7 @@
 <?php
 // Yeni kullanıcı kaydı
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/api/auth.php';
 session_start();
 
 if (isset($_SESSION['user_id'])) {
@@ -11,7 +12,6 @@ if (isset($_SESSION['user_id'])) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/api/auth.php';
 
     $auth = new SHAAuth();
     $result = $auth->register(
