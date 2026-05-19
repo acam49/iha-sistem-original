@@ -92,6 +92,13 @@
 
                     <form id="masrafForm" style="display: flex; flex-direction: column; gap: 10px;">
                         
+                        <div class="input-group" id="ucusSecimGrubu" style="display: none; margin-bottom: 0; flex-direction: column; align-items: stretch; gap: 5px;">
+                            <label style="color: #aaa; font-size: 13px; text-align: left; width: 100%;">Uçuş Logu Seçin:</label>
+                            <select id="fUcusSelect" style="padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color:#fff; width: 100%;" onchange="ucusSecildi()">
+                                <!-- Dinamik doldurulacak -->
+                            </select>
+                        </div>
+
                         <div class="input-group" style="margin-bottom: 0;">
                             <input type="text" id="fPersonelId" class="input-locked" placeholder="Personel ID (Otomatik)" readonly> <input type="text" id="fIhaId" class="input-locked" placeholder="Kullanılan İHA (Otomatik)" readonly> </div>
                         <div class="input-group" style="margin-bottom: 0;">
@@ -277,6 +284,8 @@
         // -------------------------------------------------------------------------
         // 🛠️ BACKEND İŞLEM 2: GÖREV VE UÇUŞ LOGU SORGULAMA (SELECT İŞLEMİ)
         // -------------------------------------------------------------------------
+        let ucusLoglariDizisi = [];
+
         function gorevSorgula() {
             let girilenId = document.getElementById('sorguGorevId').value.trim();
             let cleanGorevId = girilenId.replace(/\D/g, '');
@@ -295,15 +304,36 @@
                         return;
                     }
                     if (!data.found) {
-                        alert('Bu ID ile eşleşen uçuş logu bulunamadı. Lütfen doğru Görev ID\'sini girin.');
+                        alert('Bu ID ile eşleşen görev bulunamadı.');
+                        document.getElementById('ucusSecimGrubu').style.display = 'none';
+                        document.getElementById('masrafForm').reset();
+                        document.getElementById('mKategori').disabled = true;
+                        document.getElementById('fMasraf').disabled = true;
+                        document.getElementById('btnMasrafKaydet').disabled = true;
                         return;
                     }
 
-                    // DB'den gelen gerçek verileri alanlara yaz
-                    document.getElementById('fPersonelId').value = data.pilotId + ' (' + data.pilotAdi + ')';
-                    document.getElementById('fIhaId').value = data.ihaAdi;
-                    document.getElementById('fSure').value = data.sure;
-                    document.getElementById('fHava').value = data.havaDurumu;
+                    // Gelen logları diziye kaydet
+                    ucusLoglariDizisi = data.logs;
+
+                    // Dropdown menüsünü doldur
+                    const selectEl = document.getElementById('fUcusSelect');
+                    selectEl.innerHTML = '';
+
+                    ucusLoglariDizisi.forEach((log, index) => {
+                        const opt = document.createElement('option');
+                        opt.value = index;
+                        opt.style.background = '#222';
+                        let logLabel = log.logId ? `Uçuş Log #${log.logId}` : 'Planlanan Görev Uçuşu';
+                        opt.textContent = `${logLabel} - Pilot: ${log.pilotAdi} (${log.sure})`;
+                        selectEl.appendChild(opt);
+                    });
+
+                    // Dropdown grubunu görünür yap
+                    document.getElementById('ucusSecimGrubu').style.display = 'flex';
+
+                    // İlk uçuş logunun verilerini doldur
+                    ucusSecildi();
                     
                     // Masraf kutularının kilidini aç
                     document.getElementById('mKategori').disabled = false;
@@ -314,6 +344,18 @@
                     console.error('Sorgulama hatası:', err);
                     alert('Sunucuya bağlanılamadı.');
                 });
+        }
+
+        function ucusSecildi() {
+            const selectEl = document.getElementById('fUcusSelect');
+            const secilenIndex = selectEl.value;
+            if (secilenIndex !== "" && ucusLoglariDizisi[secilenIndex]) {
+                const log = ucusLoglariDizisi[secilenIndex];
+                document.getElementById('fPersonelId').value = log.pilotId + ' (' + log.pilotAdi + ')';
+                document.getElementById('fIhaId').value = log.ihaAdi;
+                document.getElementById('fSure').value = log.sure;
+                document.getElementById('fHava').value = log.havaDurumu;
+            }
         }
 
         // -------------------------------------------------------------------------
@@ -349,6 +391,7 @@
                     // İşlem bitince formu kilitle ve temizle
                     document.getElementById('sorguGorevId').value = ""; 
                     document.getElementById('masrafForm').reset(); 
+                    document.getElementById('ucusSecimGrubu').style.display = "none";
                     document.getElementById('mKategori').disabled = true;
                     document.getElementById('fMasraf').disabled = true;
                     document.getElementById('btnMasrafKaydet').disabled = true;

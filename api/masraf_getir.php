@@ -21,14 +21,13 @@ try {
         SELECT 
             m.MasrafID,
             m.Ilgili_Kayit_ID AS GorevID,
-            ul.PilotID AS PersonelID,
+            g.PilotID AS PersonelID,
             CONCAT(p.Ad, ' ', p.Soyad) AS PilotAdi,
             m.Kategori,
             m.Miktar AS Tutar
         FROM MASRAF m
         LEFT JOIN GOREV g ON m.Ilgili_Kayit_ID = g.GorevID
-        LEFT JOIN UCUS_LOGU ul ON ul.GorevID = g.GorevID
-        LEFT JOIN PERSONEL p ON ul.PilotID = p.PERSONEL_ID
+        LEFT JOIN PERSONEL p ON g.PilotID = p.PERSONEL_ID
         WHERE m.Kategori != 'Bakım'
         ORDER BY m.MasrafID DESC
     ");
