@@ -123,18 +123,22 @@
     </div>
 
     <script>
-        // Sayfa yüklenince müsait İHA'ları DB'den çek
-        window.addEventListener('DOMContentLoaded', function () {
+        // Sayfa yüklenince verileri DB'den çek
+        function ihalarYukle() {
             fetch('../../api/gorev_iha_getir.php')
                 .then(r => r.json())
                 .then(data => {
                     if (data.error) {
-                        if (data.error === 'Unauthorized') window.location.replace('../../index.html');
+                        if (data.error === 'Unauthorized') {
+                            window.location.replace('../../login.php');
+                        } else {
+                            alert('Hata: ' + data.error);
+                        }
                         return;
                     }
                     const sel = document.getElementById('ihaSecimi');
                     sel.innerHTML = '<option value="" disabled selected>İHA Seçin (Sadece Uçuşa Hazır Olanlar)</option>';
-                    if (data.ihalar.length === 0) {
+                    if (!data.ihalar || data.ihalar.length === 0) {
                         sel.innerHTML += '<option value="" disabled>Hazır İHA bulunmuyor</option>';
                     } else {
                         data.ihalar.forEach(iha => {
@@ -142,79 +146,177 @@
                         });
                     }
                 })
-                .catch(err => console.error('İHA listesi yüklenemedi:', err));
+                .catch(err => {
+                    console.error('İHA listesi yüklenemedi:', err);
+                    alert('İHA listesi sunucudan yüklenirken bağlantı hatası oluştu.');
+                });
+        }
+
+        function gorevleriYukle() {
+            fetch('../../api/gorev_getir.php')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        if (data.error === 'Unauthorized') {
+                            window.location.replace('../../login.php');
+                        } else {
+                            alert('Hata: ' + data.error);
+                        }
+                        return;
+                    }
+                    
+                    // Aktif Görevler tablosunu doldur
+                    const tbodyAktif = document.getElementById('aktifGorevler');
+                    tbodyAktif.innerHTML = '';
+                    if (!data.aktifGorevler || data.aktifGorevler.length === 0) {
+                        tbodyAktif.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#888;">Devam eden operasyon bulunmamaktadır.</td></tr>';
+                    } else {
+                        data.aktifGorevler.forEach(g => {
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>GRV-${g.GorevID}</td>
+                                <td style="font-weight:bold; color:#f39c12;">${g.Baslik}</td>
+                                <td>${g.Detay}</td>
+                                <td>${g.Lokasyon}</td>
+                                <td>${g.IhaAdi} (${g.IhaModel})</td>
+                                <td>${g.PilotID} (${g.PilotAdi})</td>
+                                <td>${g.Planlanan_Tarih}</td>
+                                <td><span class="status status-active">Devam Ediyor</span></td>
+                                <td><button type="button" class="btn btn-finish" onclick="goreviBitir('${g.GorevID}')">Bitir</button></td>
+                            `;
+                            tbodyAktif.appendChild(tr);
+                        });
+                    }
+
+                    // Arşiv Görevler tablosunu doldur
+                    const tbodyArsiv = document.getElementById('arsivGorevler');
+                    tbodyArsiv.innerHTML = '';
+                    if (!data.arsivGorevler || data.arsivGorevler.length === 0) {
+                        tbodyArsiv.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#888;">Arşivlenmiş görev bulunmamaktadır.</td></tr>';
+                    } else {
+                        data.arsivGorevler.forEach(g => {
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>GRV-${g.GorevID}</td>
+                                <td style="font-weight:bold; color:#f39c12;">${g.Baslik}</td>
+                                <td>${g.Lokasyon}</td>
+                                <td>${g.IhaAdi} (${g.IhaModel})</td>
+                                <td>${g.PilotID} (${g.PilotAdi})</td>
+                                <td>${g.Planlanan_Tarih}</td>
+                                <td style="color:#f1c40f;">${g.SureMetni}</td>
+                                <td><span class="status status-done">Tamamlandı</span></td>
+                                <td><button type="button" class="btn btn-archive" onclick="satiriSil('${g.GorevID}')">Sil</button></td>
+                            `;
+                            tbodyArsiv.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('Görevler yüklenemedi:', err);
+                    alert('Görev listesi sunucudan yüklenirken bağlantı hatası oluştu.');
+                });
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            ihalarYukle();
+            gorevleriYukle();
         });
 
-        // Form gönderildiğinde çalışacak fonksiyon
+        // Form gönderildiğinde çalışacak fonksiyon (Yeni görev planlama)
         document.getElementById('gorevForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Sayfanın yenilenmesini engeller
+            e.preventDefault();
 
-            // Formdaki verileri alıyoruz (Yeni eklenenler dahil)
-            const konu = document.getElementById('gorevKonusu').value;
-            const detay = document.getElementById('detay').value;
-            const lokasyon = document.getElementById('lokasyon').value;
-            const iha = document.getElementById('ihaSecimi').value;
-            const personel = document.getElementById('personel').value;
+            const konu = document.getElementById('gorevKonusu').value.trim();
+            const detay = document.getElementById('detay').value.trim();
+            const lokasyon = document.getElementById('lokasyon').value.trim();
+            const ihaId = document.getElementById('ihaSecimi').value;
+            const personelRaw = document.getElementById('personel').value.trim();
+            const pilotId = personelRaw.replace(/\D/g, ''); // Sayısal ID'yi ayrıştır
             const tarih = document.getElementById('tarih').value;
 
-            // Rastgele Görev ID'si oluşturma (Örn: GRV-4821)
-            const randomID = 'GRV-' + Math.floor(Math.random() * 9000 + 1000);
+            if (pilotId === "") {
+                alert("Lütfen geçerli bir Personel ID (Sorumlu Personel) girin.");
+                return;
+            }
 
-            // Aktif tablosuna eklenecek yeni satır (HTML)
-            const yeniSatir = document.createElement('tr');
-            yeniSatir.innerHTML = `
-                <td>${randomID}</td>
-                <td>${konu}</td>
-                <td>${detay}</td>
-                <td>${lokasyon}</td>
-                <td>${iha}</td>
-                <td>${personel}</td>
-                <td>${tarih}</td>
-                <td><span class="status status-active">Devam Ediyor</span></td>
-                <td><button type="button" class="btn btn-finish" onclick="goreviBitir(this)">Bitir</button></td>
-            `;
+            const formData = new FormData();
+            formData.append('baslik', konu);
+            formData.append('detay', detay);
+            formData.append('lokasyon', lokasyon);
+            formData.append('ihaId', ihaId);
+            formData.append('pilotId', pilotId);
+            formData.append('tarih', tarih);
 
-            // Satırı tabloya ekle
-            document.getElementById('aktifGorevler').appendChild(yeniSatir);
-
-            // Formu temizle
-            document.getElementById('gorevForm').reset();
+            fetch('../../api/gorev_ekle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('gorevForm').reset();
+                    gorevleriYukle();
+                    ihalarYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Görev planlanırken ağ hatası oluştu.');
+            });
         });
 
         // Görevi Bitir Butonuna basıldığında çalışacak fonksiyon
-        function goreviBitir(buton) {
-            // Tıklanan butonun bulunduğu satırı (tr) bul
-            const satir = buton.parentElement.parentElement;
+        function goreviBitir(gorevId) {
+            const formData = new FormData();
+            formData.append('gorevId', gorevId);
 
-            // Satırdaki verileri oku (Yeni sütunlara göre indexler güncellendi)
-            const id = satir.cells[0].innerText;
-            const konu = satir.cells[1].innerText;
-            // detayı arşive almıyoruz, çok yer kaplamasın diye
-            const lokasyon = satir.cells[3].innerText;
-            const iha = satir.cells[4].innerText;
-            const personel = satir.cells[5].innerText;
-            const tarih = satir.cells[6].innerText;
+            fetch('../../api/gorev_bitir.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    gorevleriYukle();
+                    ihalarYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Görev tamamlanırken ağ hatası oluştu.');
+            });
+        }
 
-            // Operasyon süresini simüle edelim (1 ile 5 saat arası rastgele bir süre)
-            const sureH = Math.floor(Math.random() * 4) + 1;
-            const sureM = Math.floor(Math.random() * 59);
-            const sureMetni = `${sureH} Saat ${sureM} Dk`;
+        function satiriSil(gorevId) {
+            if (confirm("Bu görev kaydını arşivden tamamen silmek istediğinize emin misiniz?")) {
+                const formData = new FormData();
+                formData.append('gorevId', gorevId);
 
-            // Arşiv tablosuna eklenecek yeni satırı oluştur
-            const arsivSatiri = document.createElement('tr');
-            arsivSatiri.innerHTML = `
-                <td>${id}</td>
-                <td>${konu}</td>
-                <td>${lokasyon}</td>
-                <td>${iha}</td>
-                <td>${personel}</td>
-                <td>${tarih}</td>
-                <td style="color:#f1c40f;">${sureMetni}</td>
-                <td><span class="status status-done">Tamamlandı</span></td>
-                <td><button type="button" class="btn btn-archive" onclick="satiriSil(this)">Arşivle</button></td>
-            `;
-
-            // Yeni satırı arşiv tablosuna ekle
-            document.getElementById('arsivGorevler').appendChild(arsivSatiri);
-
-        // Eski sat
+                fetch('../../api/gorev_sil.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Hata: ' + data.error);
+                    } else {
+                        gorevleriYukle();
+                        ihalarYukle();
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Görev silinirken ağ hatası oluştu.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
