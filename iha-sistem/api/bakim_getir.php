@@ -27,7 +27,7 @@ try {
             COALESCE(m.Miktar, 0) AS Masraf
         FROM BAKIM_KAYDI b
         LEFT JOIN IHA i ON b.IhaID = i.IhaID
-        LEFT JOIN PERSONEL p ON b.SorumluID = p.PersonelID
+        LEFT JOIN PERSONEL p ON b.SorumluID = p.PERSONEL_ID
         LEFT JOIN MASRAF m ON m.Ilgili_Kayit_ID = b.BakimID
         ORDER BY b.BakimID DESC
     ");

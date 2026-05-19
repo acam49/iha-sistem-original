@@ -37,7 +37,7 @@ try {
             ul.Hava_Durumu,
             TIMESTAMPDIFF(MINUTE, ul.Baslangic_Saati, ul.Bitis_Saati) AS SureDakika
         FROM UCUS_LOGU ul
-        LEFT JOIN PERSONEL p ON ul.PilotID = p.PersonelID
+        LEFT JOIN PERSONEL p ON ul.PilotID = p.PERSONEL_ID
         LEFT JOIN IHA i ON ul.IhaID = i.IhaID
         WHERE ul.GorevID = ?
         LIMIT 1

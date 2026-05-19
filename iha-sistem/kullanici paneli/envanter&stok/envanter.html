@@ -55,16 +55,16 @@
                 <div class="glass-panel form-card">
                     <h3 class="panel-title">İHA GÜNCELLE</h3>
                     <form id="ihaGuncelleForm">
-                        <input type="text" placeholder="ID Giriniz" required>
-                        <input type="text" placeholder="Yeni Ad (Opsiyonel)">
-                        <select>
+                        <input type="text" id="gIhaId" placeholder="ID Giriniz" required>
+                        <input type="text" id="gIhaAd" placeholder="Yeni Ad (Opsiyonel)">
+                        <select id="gIhaDurum">
                             <option value="">Durum Güncelle</option>
                             <option value="Müsait">Müsait</option>
                             <option value="Uçuşta">Uçuşta</option>
                             <option value="Bakımda">Bakımda</option>
                             <option value="Arızalı">Arızalı</option>
                         </select>
-                        <button type="button" class="btn btn-turquoise">Güncelle</button>
+                        <button type="submit" class="btn btn-turquoise">Güncelle</button>
                     </form>
                 </div>
 
@@ -90,10 +90,10 @@
                 <div class="glass-panel form-card">
                     <h3 class="panel-title">STOK GÜNCELLE</h3>
                     <form id="stokGuncelleForm">
-                        <input type="text" placeholder="ParcaID Giriniz" required>
-                        <input type="number" placeholder="Yeni Stok Adedi">
-                        <input type="number" placeholder="Yeni Kritik Seviye">
-                        <button type="button" class="btn btn-yellow">Yenile</button>
+                        <input type="text" id="gParcaId" placeholder="ParcaID Giriniz" required>
+                        <input type="number" id="gParcaStok" placeholder="Yeni Stok Adedi">
+                        <input type="number" id="gParcaKritik" placeholder="Yeni Kritik Seviye">
+                        <button type="submit" class="btn btn-yellow">Yenile</button>
                     </form>
                 </div>
 
@@ -141,69 +141,8 @@
     </div>
 
     <script>
-        // --- 1. YENİ İHA EKLEME TESTİ ---
-        document.getElementById('ihaEkleForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            let id = document.getElementById('ihaId').value;
-            let ad = document.getElementById('ihaAd').value;
-            let model = document.getElementById('ihaModel').value;
-            let durum = document.getElementById('ihaDurum').value;
-
-            // Duruma göre renk belirleme
-            let bg = durum === 'Müsait' ? '#2ecc71' : (durum === 'Arızalı' ? '#e74c3c' : '#f39c12');
-            let color = durum === 'Müsait' || durum === 'Bakımda' ? '#000' : '#fff';
-
-            let tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${id}</td>
-                <td>${ad}</td>
-                <td>${model}</td>
-                <td><span class="badge" style="background:${bg}; color:${color};">${durum}</span></td>
-            `;
-            document.getElementById('ihaTablosu').appendChild(tr);
-            this.reset();
-        });
-
-        // --- 2. YENİ PARÇA EKLEME VE KRİTİK SEVİYE KONTROLÜ ---
-        document.getElementById('parcaEkleForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let id = document.getElementById('pId').value;
-            let ad = document.getElementById('pAd').value;
-            let tip = document.getElementById('pTip').value;
-            let stok = parseInt(document.getElementById('pStok').value);
-            let kritik = parseInt(document.getElementById('pKritik').value);
-
-            /* ==============================================================
-               BACKEND (PHP) İÇİN MANTIK NOTU:
-               Eğer (Stok_Adedi <= Kritik_Seviye) ise sistem "Kritik Stok" 
-               uyarısı verir. Front-end'de bunu kırmızı badge ile gösteriyoruz.
-            ============================================================== */
-            
-            let durumHtml = "";
-            let stokGosterim = `<b>${stok}</b> / ${kritik}`;
-
-            if (stok <= kritik) {
-                // Eğer stok kritik seviyenin altına düştüyse kırmızı uyarı bas!
-                durumHtml = `<span class="badge" style="background:#e74c3c; color:#fff; box-shadow: 0 0 8px #e74c3c;">Kritik Stok</span>`;
-            } else {
-                durumHtml = `<span class="badge" style="background:#2ecc71; color:#000;">Yeterli</span>`;
-            }
-
-            let tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${id}</td>
-                <td>${ad}</td>
-                <td>${tip}</td>
-                <td>${stokGosterim}</td>
-                <td>${durumHtml}</td>
-            `;
-            document.getElementById('stokTablosu').appendChild(tr);
-            this.reset();
-        });
-
-        // Veritabanından gerçek verileri çek ve tabloları doldur
-        window.onload = function() {
+        // --- ENVANTER VE İHA BİLGİLERİNİ YÜKLEME FONKSİYONU ---
+        function envanterYukle() {
             fetch('../../api/envanter_getir.php')
                 .then(response => response.json())
                 .then(data => {
@@ -217,7 +156,7 @@
 
                     // İHA Tablosunu Doldur
                     const ihaTablosu = document.getElementById('ihaTablosu');
-                    ihaTablosu.innerHTML = ''; // Önce tabloyu temizle
+                    ihaTablosu.innerHTML = ''; 
                     if (data.ihalar && data.ihalar.length > 0) {
                         data.ihalar.forEach(iha => {
                             let bg = iha.Durum === 'Müsait' ? '#2ecc71' : (iha.Durum === 'Arızalı' ? '#e74c3c' : '#f39c12');
@@ -238,7 +177,7 @@
 
                     // Stok Tablosunu Doldur
                     const stokTablosu = document.getElementById('stokTablosu');
-                    stokTablosu.innerHTML = ''; // Önce tabloyu temizle
+                    stokTablosu.innerHTML = ''; 
                     if (data.envanter && data.envanter.length > 0) {
                         data.envanter.forEach(parca => {
                             let stok = parseInt(parca.Stok_Adedi);
@@ -267,7 +206,150 @@
                     }
                 })
                 .catch(error => console.error('Hata:', error));
-        };
+        }
+
+        // Sayfa yüklenince tabloları getir
+        window.addEventListener('DOMContentLoaded', envanterYukle);
+
+        // --- 1. YENİ İHA EKLEME ---
+        document.getElementById('ihaEkleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('ihaId').value;
+            const ad = document.getElementById('ihaAd').value;
+            const model = document.getElementById('ihaModel').value;
+            const seri = document.getElementById('ihaSeri').value;
+            const durum = document.getElementById('ihaDurum').value;
+
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('ad', ad);
+            formData.append('model', model);
+            formData.append('seri', seri);
+            formData.append('durum', durum);
+
+            fetch('../../api/iha_ekle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('ihaEkleForm').reset();
+                    envanterYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('İHA kaydedilirken ağ hatası oluştu.');
+            });
+        });
+
+        // --- 2. İHA GÜNCELLEME ---
+        document.getElementById('ihaGuncelleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('gIhaId').value;
+            const ad = document.getElementById('gIhaAd').value;
+            const durum = document.getElementById('gIhaDurum').value;
+
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('ad', ad);
+            formData.append('durum', durum);
+
+            fetch('../../api/iha_guncelle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('ihaGuncelleForm').reset();
+                    envanterYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('İHA güncellenirken ağ hatası oluştu.');
+            });
+        });
+
+        // --- 3. YENİ PARÇA EKLEME ---
+        document.getElementById('parcaEkleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('pId').value;
+            const ad = document.getElementById('pAd').value;
+            const tip = document.getElementById('pTip').value;
+            const stok = document.getElementById('pStok').value;
+            const kritik = document.getElementById('pKritik').value;
+
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('ad', ad);
+            formData.append('tip', tip);
+            formData.append('stok', stok);
+            formData.append('kritik', kritik);
+
+            fetch('../../api/parca_ekle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('parcaEkleForm').reset();
+                    envanterYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Parça kaydedilirken ağ hatası oluştu.');
+            });
+        });
+
+        // --- 4. STOK GÜNCELLEME ---
+        document.getElementById('stokGuncelleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('gParcaId').value;
+            const stok = document.getElementById('gParcaStok').value;
+            const kritik = document.getElementById('gParcaKritik').value;
+
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('stok', stok);
+            formData.append('kritik', kritik);
+
+            fetch('../../api/parca_guncelle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('stokGuncelleForm').reset();
+                    envanterYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Stok güncellenirken ağ hatası oluştu.');
+            });
+        });
     </script>
 </body>
 </html>

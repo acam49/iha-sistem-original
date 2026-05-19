@@ -128,7 +128,7 @@
 
     <script>
         // Sayfa yüklenince bakım kayıtlarını DB'den çek
-        window.addEventListener('DOMContentLoaded', function() {
+        function bakimLoglariniYukle() {
             fetch('../../api/bakim_getir.php')
                 .then(r => r.json())
                 .then(data => {
@@ -161,6 +161,40 @@
                     }
                 })
                 .catch(err => console.error('Bakım verileri yüklenemedi:', err));
+        }
+
+        // Sayfa yüklenince görev masraflarını DB'den çek
+        function gorevMasraflariniYukle() {
+            fetch('../../api/masraf_getir.php')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        if (data.error === 'Unauthorized') window.location.replace('../../index.html');
+                        return;
+                    }
+                    const tbody = document.getElementById('masrafTablosu');
+                    tbody.innerHTML = '';
+                    if (!data.masraflar || data.masraflar.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#888;">Burası boş...</td></tr>';
+                    } else {
+                        data.masraflar.forEach(masraf => {
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td style="color:#f39c12; font-weight:bold;">GRV-${masraf.GorevID}</td>
+                                <td>${masraf.PersonelID ? masraf.PersonelID + ' (' + masraf.PilotAdi + ')' : '-'}</td>
+                                <td>${masraf.Kategori}</td>
+                                <td style="color:#2ecc71; font-weight:bold;">${parseFloat(masraf.Tutar).toLocaleString('tr-TR')} TL</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(err => console.error('Masraf verileri yüklenemedi:', err));
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            bakimLoglariniYukle();
+            gorevMasraflariniYukle();
         });
 
         // --- ÖZEL ŞEFFAF AÇILIR MENÜNÜN ÇALIŞMA MANTIĞI ---
@@ -194,30 +228,49 @@
         document.getElementById('bakimForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Buradaki veriler PHP'ye POST edilecek
-            let ihaId = document.getElementById('bIhaId').value;
-            let sorumluId = document.getElementById('bSorumluId').value;
-            let ariza = document.getElementById('bAriza').value;
-            let masraf = document.getElementById('bMasraf').value;
+            let ihaId = document.getElementById('bIhaId').value.trim();
+            let sorumluId = document.getElementById('bSorumluId').value.trim();
+            let tarih = document.getElementById('bTarih').value;
+            let ariza = document.getElementById('bAriza').value.trim();
+            let cozum = document.getElementById('bCozum').value.trim();
+            let masraf = document.getElementById('bMasraf').value.trim();
             let durum = hiddenInput.value; 
 
-            // Frontend Görsel Test Eklemesi
-            let durumHtml = durum === "tamirde" ? 
-                '<span class="badge b-tamirde">Tamir Ediliyor</span>' : 
-                '<span class="badge b-bitti">Tamir Edildi</span>';
+            if (durum === "") {
+                alert("Lütfen durum seçin (Tamir Ediliyor / Tamir Edildi)");
+                return;
+            }
 
-            let yeniSatir = document.createElement('tr');
-            yeniSatir.innerHTML = `
-                <td>${ihaId}</td>
-                <td>${ariza}</td>
-                <td>${sorumluId}</td>
-                <td>${masraf} TL</td>
-                <td>${durumHtml}</td>
-            `;
-            document.getElementById('bakimTablosu').appendChild(yeniSatir);
-            this.reset();
-            durumText.innerText = "Durum Seçin";
-            selectBox.classList.remove('has-value');
+            const formData = new FormData();
+            formData.append('ihaId', ihaId);
+            formData.append('sorumluId', sorumluId);
+            formData.append('tarih', tarih);
+            formData.append('ariza', ariza);
+            formData.append('cozum', cozum);
+            formData.append('masraf', masraf);
+            formData.append('durum', durum);
+
+            fetch('../../api/bakim_ekle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('bakimForm').reset();
+                    durumText.innerText = "Durum Seçin";
+                    selectBox.classList.remove('has-value');
+                    hiddenInput.value = "";
+                    bakimLoglariniYukle(); // Tabloyu dinamik olarak güncelle
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Bakım kaydı eklenirken ağ hatası oluştu.');
+            });
         });
 
 
@@ -226,13 +279,14 @@
         // -------------------------------------------------------------------------
         function gorevSorgula() {
             let girilenId = document.getElementById('sorguGorevId').value.trim();
+            let cleanGorevId = girilenId.replace(/\D/g, '');
             
-            if(girilenId === "") {
-                alert("Lütfen bir Görev ID girin.");
+            if(cleanGorevId === "") {
+                alert("Lütfen geçerli bir Görev ID girin.");
                 return;
             }
 
-            fetch(`../../api/ucus_logu_getir.php?gorev_id=${encodeURIComponent(girilenId)}`)
+            fetch(`../../api/ucus_logu_getir.php?gorev_id=${encodeURIComponent(cleanGorevId)}`)
                 .then(r => r.json())
                 .then(data => {
                     if (data.error) {
@@ -266,32 +320,47 @@
         // 🛠️ BACKEND İŞLEM 3: MASRAF KAYDETME (MASRAF TABLOSUNA INSERT)
         // -------------------------------------------------------------------------
         function masrafKaydet() {
-            let gorevId = document.getElementById('sorguGorevId').value.toUpperCase();
-            let personelId = document.getElementById('fPersonelId').value;
+            let gorevIdRaw = document.getElementById('sorguGorevId').value;
+            let cleanGorevId = gorevIdRaw.replace(/\D/g, '');
             let kategori = document.getElementById('mKategori').value;
-            let masraf = document.getElementById('fMasraf').value;
+            let masraf = document.getElementById('fMasraf').value.trim();
 
-            if(masraf === "" || kategori === "") {
+            if (cleanGorevId === "" || masraf === "" || kategori === "") {
                 alert("Lütfen kategori ve tutar bilgilerini eksiksiz girin.");
                 return;
             }
 
-            // FRONTEND GÖRSEL TESTİ İÇİN TABLOYA EKLEME:
-            let yeniSatir = document.createElement('tr');
-            yeniSatir.innerHTML = `
-                <td style="color:#f39c12; font-weight:bold;">${gorevId}</td>
-                <td>${personelId}</td>
-                <td>${kategori}</td>
-                <td style="color:#2ecc71; font-weight:bold;">${masraf} TL</td>
-            `;
-            document.getElementById('masrafTablosu').appendChild(yeniSatir);
+            const formData = new FormData();
+            formData.append('gorevId', cleanGorevId);
+            formData.append('kategori', kategori);
+            formData.append('masraf', masraf);
 
-            // İşlem bitince formu kilitle ve temizle
-            document.getElementById('sorguGorevId').value = ""; 
-            document.getElementById('masrafForm').reset(); 
-            document.getElementById('mKategori').disabled = true;
-            document.getElementById('fMasraf').disabled = true;
-            document.getElementById('btnMasrafKaydet').disabled = true;
+            fetch('../../api/masraf_ekle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    
+                    // İşlem bitince formu kilitle ve temizle
+                    document.getElementById('sorguGorevId').value = ""; 
+                    document.getElementById('masrafForm').reset(); 
+                    document.getElementById('mKategori').disabled = true;
+                    document.getElementById('fMasraf').disabled = true;
+                    document.getElementById('btnMasrafKaydet').disabled = true;
+                    
+                    // Tabloları dinamik olarak güncelle
+                    gorevMasraflariniYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Masraf eklenirken ağ hatası oluştu.');
+            });
         }
     </script>
 </body>

@@ -105,7 +105,7 @@
 
     <script>
         // Sayfa yüklenince personelleri DB'den çek
-        window.addEventListener('DOMContentLoaded', function() {
+        function personelleriYukle() {
             fetch('../../api/personel_getir.php')
                 .then(r => r.json())
                 .then(data => {
@@ -129,14 +129,16 @@
                                 <td class="td-telefon">${p.Telefon || '-'}</td>
                                 <td class="td-eposta">${p.Eposta}</td>
                                 <td class="td-yetki"><span class="badge ${yetkiCss}">${p.Rol}</span></td>
-                                <td><button class="btn-red" onclick="personelSil(this)">Sil</button></td>
+                                <td><button class="btn-red" onclick="personelSil('${p.PERSONEL_ID}')">Sil</button></td>
                             `;
                             tbody.appendChild(tr);
                         });
                     }
                 })
                 .catch(err => console.error('Personel verileri yüklenemedi:', err));
-        });
+        }
+
+        window.addEventListener('DOMContentLoaded', personelleriYukle);
 
         // Yetki ismine göre doğru CSS sınıfını döndüren fonksiyon
         function yetkiClassBul(yetki) {
@@ -154,98 +156,107 @@
         document.getElementById('ekleForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            let id = document.getElementById('yeniId').value;
-            let ad = document.getElementById('yeniAd').value;
-            let soyad = document.getElementById('yeniSoyad').value;
-            let telefon = document.getElementById('yeniTelefon').value;
-            let eposta = document.getElementById('yeniEposta').value;
+            let id = document.getElementById('yeniId').value.trim();
+            let ad = document.getElementById('yeniAd').value.trim();
+            let soyad = document.getElementById('yeniSoyad').value.trim();
+            let telefon = document.getElementById('yeniTelefon').value.trim();
+            let eposta = document.getElementById('yeniEposta').value.trim();
+            let sifre = document.getElementById('yeniSifre').value;
             let yetki = document.getElementById('yeniYetki').value;
-            
-            let adSoyad = (ad + " " + soyad).toUpperCase();
-            let yetkiCss = yetkiClassBul(yetki);
 
-            let tablo = document.getElementById('personelTablosu');
-            
-            // Tabloda bu ID var mı kontrolü
-            if(document.querySelector(`tr[data-id="${id}"]`)) {
-                alert("Bu ID'ye sahip bir personel zaten var!");
-                return;
-            }
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('ad', ad);
+            formData.append('soyad', soyad);
+            formData.append('telefon', telefon);
+            formData.append('eposta', eposta);
+            formData.append('sifre', sifre);
+            formData.append('yetki', yetki);
 
-            let yeniSatir = document.createElement('tr');
-            yeniSatir.setAttribute('data-id', id); // Satıra kimlik veriyoruz ki güncellerken bulalım
-            
-            yeniSatir.innerHTML = `
-                <td class="td-isim">${adSoyad}</td>
-                <td class="td-id">${id}</td>
-                <td class="td-telefon">${telefon}</td>
-                <td class="td-eposta">${eposta}</td>
-                <td class="td-yetki"><span class="badge ${yetkiCss}">${yetki}</span></td>
-                <td><button class="btn-red" onclick="personelSil(this)">Sil</button></td>
-            `;
-
-            tablo.appendChild(yeniSatir);
-            this.reset(); // Formu temizle
+            fetch('../../api/personel_ekle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('ekleForm').reset();
+                    personelleriYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Personel kaydedilirken ağ hatası oluştu.');
+            });
         });
 
         // --- BİLGİ GÜNCELLEME ---
         document.getElementById('guncelleForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            let mevcutId = document.getElementById('gMevcutId').value;
-            // Tablodan o kişiyi bul (data-id özelliğine göre)
-            let satir = document.querySelector(`tr[data-id="${mevcutId}"]`);
-
-            if(!satir) {
-                alert("Girdiğiniz ID'ye ait personel bulunamadı!");
-                return;
-            }
-
-            // Formdaki yeni verileri çek
-            let yeniId = document.getElementById('gYeniId').value;
-            let yeniAd = document.getElementById('gYeniAd').value;
-            let yeniSoyad = document.getElementById('gYeniSoyad').value;
-            let yeniTelefon = document.getElementById('gYeniTelefon').value;
-            let yeniEposta = document.getElementById('gYeniEposta').value;
+            let mevcutId = document.getElementById('gMevcutId').value.trim();
+            let yeniId = document.getElementById('gYeniId').value.trim();
+            let yeniAd = document.getElementById('gYeniAd').value.trim();
+            let yeniSoyad = document.getElementById('gYeniSoyad').value.trim();
+            let yeniTelefon = document.getElementById('gYeniTelefon').value.trim();
+            let yeniEposta = document.getElementById('gYeniEposta').value.trim();
             let yeniYetki = document.getElementById('gYeniYetki').value;
 
-            // Eğer yeni ID girildiyse değiştir
-            if(yeniId !== "") {
-                satir.setAttribute('data-id', yeniId);
-                satir.querySelector('.td-id').innerText = yeniId;
-            }
+            const formData = new FormData();
+            formData.append('mevcutId', mevcutId);
+            formData.append('yeniId', yeniId);
+            formData.append('ad', yeniAd);
+            formData.append('soyad', yeniSoyad);
+            formData.append('telefon', yeniTelefon);
+            formData.append('eposta', yeniEposta);
+            formData.append('yetki', yeniYetki);
 
-            // İsim veya Soyisim değiştiyse
-            if(yeniAd !== "" || yeniSoyad !== "") {
-                let guncelAd = yeniAd !== "" ? yeniAd : "";
-                let guncelSoyad = yeniSoyad !== "" ? yeniSoyad : "";
-                satir.querySelector('.td-isim').innerText = (guncelAd + " " + guncelSoyad).trim().toUpperCase();
-            }
-
-            // Telefon değiştiyse
-            if(yeniTelefon !== "") {
-                satir.querySelector('.td-telefon').innerText = yeniTelefon;
-            }
-
-            // E-posta değiştiyse
-            if(yeniEposta !== "") {
-                satir.querySelector('.td-eposta').innerText = yeniEposta;
-            }
-
-            // Rütbe değiştiyse
-            if(yeniYetki !== "") {
-                let yetkiCss = yetkiClassBul(yeniYetki);
-                satir.querySelector('.td-yetki').innerHTML = `<span class="badge ${yetkiCss}">${yeniYetki}</span>`;
-            }
-
-            alert("Personel bilgileri başarıyla güncellendi.");
-            this.reset(); // Güncelleme formunu temizle
+            fetch('../../api/personel_guncelle.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                } else {
+                    alert(data.message);
+                    document.getElementById('guncelleForm').reset();
+                    personelleriYukle();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Personel bilgileri güncellenirken ağ hatası oluştu.');
+            });
         });
 
         // --- PERSONEL SİLME ---
-        function personelSil(buton) {
+        function personelSil(id) {
             if(confirm("Bu personeli sistemden silmek istediğinize emin misiniz?")) {
-                buton.parentElement.parentElement.remove();
+                const formData = new FormData();
+                formData.append('id', id);
+
+                fetch('../../api/personel_sil.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Hata: ' + data.error);
+                    } else {
+                        alert(data.message);
+                        personelleriYukle();
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Personel silinirken ağ hatası oluştu.');
+                });
             }
         }
     </script>
