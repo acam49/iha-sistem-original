@@ -1,11 +1,14 @@
 <?php
 // filepath: config.php
-// Veritabanı ve Güvenlik Yapılandırması
-
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'iha_sistemi');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// Veritabanı ve Güvenlik Yapılandırması (Railway / Local Uyumlu)
+$dbHost = getenv('MYSQLHOST') ?: 'localhost';
+if (getenv('MYSQLPORT')) {
+    $dbHost .= ';port=' . getenv('MYSQLPORT');
+}
+define('DB_HOST', $dbHost);
+define('DB_NAME', getenv('MYSQLDATABASE') ?: 'iha_sistemi');
+define('DB_USER', getenv('MYSQLUSER') ?: 'root');
+define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
 
 // SHA-256 için güvenlik anahtarı
 define('AUTH_SALT', 'IHA_SISTEM_2026_SECURE_KEY_X9kL2mP');
