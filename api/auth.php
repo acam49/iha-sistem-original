@@ -2,6 +2,7 @@
 // Kimlik doğrulama: giriş, kayıt, oturum, çıkış
 require_once __DIR__ . '/../config.php';
 
+// SHA-256 tabanlı bir kimlik doğrulama sınıfı
 class SHAAuth {
     private $conn;
 
@@ -19,14 +20,14 @@ class SHAAuth {
         }
     }
 
-    public function hashPassword($password) {
+    public function hashPassword(string $password) {
         $salt = AUTH_SALT;
-        $hash = hash('sha256', $salt . $password);
-        $hash = hash('sha256', $hash . $salt);
+        $hash = hash('sha256', "$salt$password");
+        $hash = hash('sha256', "$hash$salt");
         return $hash;
     }
 
-    public function login($eposta, $password) {
+    public function login(string $eposta, string $password) {
         $eposta = strip_tags(trim($eposta));
         $password = strip_tags(trim($password));
 
@@ -47,7 +48,7 @@ class SHAAuth {
         return ['success' => true, 'message' => 'Giriş başarılı.'];
     }
 
-    public function register($ad, $soyad, $eposta, $password, $passwordConfirm) {
+    public function register(string $ad, string $soyad, string $eposta, string $password, string $passwordConfirm) {
         $ad = strip_tags(trim($ad));
         $soyad = strip_tags(trim($soyad));
         $eposta = strip_tags(trim($eposta));
@@ -135,7 +136,7 @@ class SHAAuth {
         return true;
     }
 
-    public function verifyPassword($userId, $password) {
+    public function verifyPassword(string $userId, string $password) {
         $hashedPassword = $this->hashPassword($password);
         $stmt = $this->conn->prepare('SELECT PERSONEL_ID FROM PERSONEL WHERE PERSONEL_ID = ? AND Sifre_Hash = ? LIMIT 1');
         $stmt->execute([$userId, $hashedPassword]);

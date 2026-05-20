@@ -1,16 +1,25 @@
 <?php
 // Giriş sayfası
+
+// Veritabanı ve güvenlik yapılandırması
 require_once __DIR__ . '/config.php';
+
+// Oturum yönetimi
 session_start();
 
+// Eğer kullanıcı zaten giriş yapmışsa, anasayfaya yönlendir
 if (isset($_SESSION['user_id'])) {
     header('Location: kullanici paneli/anasayfa/dashboard.html');
+
+    // Oturum süresi kontrolü
     exit;
 }
+
 
 $error = '';
 $success = '';
 
+// Kayıt sonrası mesaj göstermek için
 if (isset($_GET['registered']) && $_GET['registered'] === '1') {
     $success = 'Kayıt tamam. Kullanıcı adı ve şifrenizle giriş yapabilirsiniz.';
 }
@@ -18,17 +27,21 @@ if (isset($_GET['registered']) && $_GET['registered'] === '1') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/api/auth.php';
 
+    // SHA-256 tabanlı kimlik doğrulama sınıfını kullanarak giriş yap
     $auth = new SHAAuth();
-    $result = $auth->login($_POST['eposta'] ?? '', $_POST['password'] ?? '');
 
+    // Giriş denemesi yap ve sonucu kontrol et
+    $result = $auth->login($_POST['eposta'] ?? '', $_POST['password'] ?? '');
     if ($result['success']) {
         header('Location: kullanici paneli/anasayfa/dashboard.html');
         exit;
-    } else {
+    }
+    else {
         $error = $result['message'];
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>

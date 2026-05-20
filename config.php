@@ -1,5 +1,6 @@
 <?php
 // filepath: config.php
+
 // Veritabanı ve Güvenlik Yapılandırması (Railway / Local Uyumlu)
 $dbHost = getenv('MYSQLHOST') ?: ($_ENV['MYSQLHOST'] ?? ($_SERVER['MYSQLHOST'] ?? 'localhost'));
 $dbPort = getenv('MYSQLPORT') ?: ($_ENV['MYSQLPORT'] ?? ($_SERVER['MYSQLPORT'] ?? '3306'));
@@ -55,6 +56,7 @@ try {
             $hash1 = hash('sha256', $salt . $pass);
             $hashedPassword = hash('sha256', $hash1 . $salt);
             
+            // Örnek bir yönetici kullanıcısı ekle
             $stmt = $conn->prepare("INSERT INTO PERSONEL (Ad, Soyad, Eposta, Sifre_Hash, Rol, Telefon) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute(['Admin', 'User', 'admin@sirius.com', $hashedPassword, 'Yazılımcı', '5551234567']);
             
