@@ -1,11 +1,15 @@
 <?php
 // Kimlik doğrulama: giriş, kayıt, oturum, çıkış
+
+// config.php dosyasını dahil et
 require_once __DIR__ . '/../config.php';
 
-// SHA-256 tabanlı bir kimlik doğrulama sınıfı
+// SHA-256 tabanlı kimlik doğrulama sınıfı
 class SHAAuth {
+    //$conn: "connection" kısaltması, veritabanı bağlantısını saklayan değişken
     private $conn;
 
+    // Yapıcı metod: veritabanı bağlantısını başlatır
     public function __construct() {
         $this->dbConnect();
     }
@@ -20,6 +24,7 @@ class SHAAuth {
         }
     }
 
+    //Şifre iki kez hashlenerek güvenlik katmanları eklenir
     public function hashPassword(string $password) {
         $salt = AUTH_SALT;
         $hash = hash('sha256', "$salt$password");
